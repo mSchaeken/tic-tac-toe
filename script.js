@@ -1,20 +1,44 @@
+// I think my brain is having an official meltdown on the Tic-Tac-Toe project. Going from the library project to this one feels like I missed a lesson or fifty haha.
+
 const playerFactory = (name, mark) => {
     const getName = () => name;
     const getPlayerMark = () => mark;
 
-    let isPlayerTurn = true;
-    const changePlayerTurn = () => {
-        if (this.isPlayerTurn === true) {
-            this.isPlayerTurn = false;
-        } else {
-            this.isPlayerTurn = true;
-        }
-        return this.isPlayerTurn;
+    let isPlayerTurn = null;
+    const setPlayerTurn = (turnTrueOrFalse) => {
+        this.isPlayerTurn = turnTrueOrFalse
     }
 
-    return {getName, getPlayerMark, changePlayerTurn};
+    const getPlayerTurn = () => {
+        return this.isPlayerTurn
+    }
+
+    return {getName, getPlayerMark, setPlayerTurn, getPlayerTurn};
 };
 
+const gameFlow = (() => {
+    const playerOne = null;
+    const playerTwo = null;
+    const setPlayers = () => {
+        gameFlow.playerOne = playerFactory(prompt('Player 1'), 'X');
+        gameFlow.playerTwo = playerFactory(prompt('Player 2'), 'O');
+    }
+
+    const getPlayers = () => {
+        return [gameFlow.playerOne.getName(), gameFlow.playerTwo.getName()];
+    }
+
+    const placeMarker = () => {
+        // if (gameFlow.playerOne.getPlayerMark() === true) {
+        //     this.textContent = gameFlow.playerOne.getPlayerMark();
+        // } else {
+        //     this.textContent = gameFlow.playerTwo.getPlayerMark();
+        // }
+        console.log(this)
+    }
+
+    return {setPlayers, getPlayers, placeMarker}
+})();
 
 const gameboard = (() => {
 
@@ -26,11 +50,11 @@ const gameboard = (() => {
     }
 
     const _createGameboard = () => {
-        const gameboard = document.querySelector('.gameboard-container')
+        const gameboard = document.querySelector('.gameboard-container');
         
         for (i = 0;  i < 9; i++) {
-            const gameboardCell = document.createElement('div')
-            gameboardCell.className = 'gameboard-cell'
+            const gameboardCell = document.createElement('div');
+            gameboardCell.className = 'gameboard-cell';
             gameboardCell.id = i;
             gameboard.append(gameboardCell);
         }
@@ -39,8 +63,8 @@ const gameboard = (() => {
 
     }
 
-    const gameboardListeners = (row1, row2, row3) => {
-        const gameboardCells = document.querySelectorAll('.gameboard-cell')
+    const _gameboardListeners = (row1, row2, row3) => {
+        const gameboardCells = document.querySelectorAll('.gameboard-cell');
 
         gameboardCells.forEach(element => {
             element.addEventListener('click', gameFlow.placeMarker)
@@ -48,6 +72,7 @@ const gameboard = (() => {
     }  
 
     _createGameboard();
+    _gameboardListeners();
 })();
 
 const displayController = (() => {
@@ -55,20 +80,3 @@ const displayController = (() => {
 })();
 
 
-const gameFlow = (() => {
-    const playerOne = null
-    const playerTwo = null
-    const setPlayers = () => {
-        gameFlow.playerOne = playerFactory(prompt('Player 1'), 'X')
-        gameFlow.playerTwo = playerFactory(prompt('Player 2'), 'O')
-    }
-
-    const getPlayers = () => {
-        return [gameFlow.playerOne.getName(), gameFlow.playerTwo.getName()]
-    }
-
-    const placeMarker = () => {
-    }
-
-    return {setPlayers, getPlayers, placeMarker}
-})();
