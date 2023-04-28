@@ -28,13 +28,12 @@ const gameFlow = (() => {
         return [gameFlow.playerOne.getName(), gameFlow.playerTwo.getName()];
     }
 
-    const placeMarker = () => {
-        // if (gameFlow.playerOne.getPlayerMark() === true) {
-        //     this.textContent = gameFlow.playerOne.getPlayerMark();
-        // } else {
-        //     this.textContent = gameFlow.playerTwo.getPlayerMark();
-        // }
-        console.log(this)
+    const placeMarker = function () {
+        if (gameFlow.playerOne.getPlayerMark() === true) {
+            this.textContent = gameFlow.playerOne.getPlayerMark();
+        } else {
+            this.textContent = gameFlow.playerTwo.getPlayerMark();
+        }
     }
 
     return {setPlayers, getPlayers, placeMarker}
@@ -78,5 +77,3 @@ const gameboard = (() => {
 const displayController = (() => {
       
 })();
-
-
