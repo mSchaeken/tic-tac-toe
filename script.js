@@ -35,6 +35,9 @@ const gameFlow = (() => {
     const playerOne = null;
     const playerTwo = null;
     const setPlayers = () => {
+        const playerOneForm = document.querySelector('#player-one')
+        const playerTwoForm = document.querySelector('#player-two')
+
         gameFlow.playerOne = playerFactory(prompt('Player 1'), 'X');
         gameFlow.playerTwo = playerFactory(prompt('Player 2'), 'O');
     }
@@ -90,8 +93,8 @@ const displayController = (() => {
     const toggleStartResetButton = () => {
         //Toggle gamestate
         gameFlow.toggleGameIsActive();
-        const buttonText = document.querySelector('#start-reset-text')
-        const buttonIcon = document.querySelector('#start-reset-icon')
+        const buttonText = document.querySelector('#start-reset-text');
+        const buttonIcon = document.querySelector('#start-reset-icon');
 
         if (gameFlow.getGameIsActive() === false) {
             buttonText.textContent = 'Start game';

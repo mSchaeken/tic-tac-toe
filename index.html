@@ -18,10 +18,16 @@
         <section class="gameboard-container"></section>
         
         <section class="game-info">
-            <div class="start-reset-button">
+            <div player-form>
+                <form class="player-one-form" action="post">
+                    <label for="player-one">Name: </label>
+                    <input type="text" name="player-one-name" id="player-one" placeholder="Sherlock">
+                </form>
+            </div>
+            <div class="start-reset">
                 <button class="start-reset-button">
                     <div id="start-reset-text"></div>
-                    <span class="material-symbols-outlined" id="start-reset-icon"><span>
+                    <span class="material-symbols-outlined" id="start-reset-icon"></span>
                 </button>
             </div>
         </section>
