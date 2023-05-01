@@ -13,7 +13,12 @@ const playerFactory = (name, mark) => {
         return this.isPlayerTurn
     }
 
-    return {getName, getPlayerMark, setPlayerTurn, getPlayerTurn};
+    return {
+        getName, 
+        getPlayerMark, 
+        setPlayerTurn, 
+        getPlayerTurn
+    };
 };
 
 const gameFlow = (() => {
@@ -22,8 +27,7 @@ const gameFlow = (() => {
     const toggleGameIsActive = () => {
         if (gameIsActive === false) {
             gameIsActive = true;
-        }
-        else {
+        } else {
             gameIsActive = false;
         }
     }
@@ -35,11 +39,16 @@ const gameFlow = (() => {
     const playerOne = null;
     const playerTwo = null;
     const setPlayers = () => {
-        const playerOneForm = document.querySelector('#player-one')
-        const playerTwoForm = document.querySelector('#player-two')
+        let playerOneForm = document.querySelector('#player-one').value;
+        let playerTwoForm = document.querySelector('#player-two').value;
 
-        gameFlow.playerOne = playerFactory(prompt('Player 1'), 'X');
-        gameFlow.playerTwo = playerFactory(prompt('Player 2'), 'O');
+        if (playerOneForm === '' || playerTwoForm === '') {
+            playerOneForm = 'John';
+            playerTwoForm = 'Doe';
+        } 
+        
+        gameFlow.playerOne = playerFactory(playerOneForm, 'X');
+        gameFlow.playerTwo = playerFactory(playerTwoForm, 'O');
     }
 
     const getPlayers = () => {
@@ -54,12 +63,13 @@ const gameFlow = (() => {
         }
     }
 
-    return {setPlayers, 
-            getPlayers, 
-            placeMarker, 
-            getGameIsActive,
-            toggleGameIsActive,
-        }
+    return {
+        setPlayers, 
+        getPlayers, 
+        placeMarker, 
+        getGameIsActive,
+        toggleGameIsActive
+    };
 })();
 
 const gameboard = (() => {
@@ -81,6 +91,7 @@ const gameboard = (() => {
             gameboard.append(gameboardCell);
         }
     }
+
     const _updateGameboard = (row1, row2, row3) => {
 
     }
@@ -111,6 +122,7 @@ const displayController = (() => {
 })();
 
 const addListeners = (() => {
+
     const addStartResetListener = () => {
         const button = document.querySelector('button.start-reset-button');
         button.addEventListener('click', displayController.toggleStartResetButton)

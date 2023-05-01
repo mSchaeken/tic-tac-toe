@@ -18,10 +18,16 @@
         <section class="gameboard-container"></section>
         
         <section class="game-info">
-            <div player-form>
-                <form class="player-one-form" action="post">
-                    <label for="player-one">Name: </label>
-                    <input type="text" name="player-one-name" id="player-one" placeholder="Sherlock">
+            <div player-form-div>
+                <form class="player-form" action="post">
+                    <label for="player-one">Name [Player One]: </label>
+                    <input type="text" name="player-one-name" id="player-one" placeholder="Sherlock" required>
+                </form>
+            </div>
+            <div class="player-form-div">
+                <form class="player-form" action="post">
+                    <label for="player-one">Name [Player Two]: </label>
+                    <input type="text" name="player-one-name" id="player-two" placeholder="Watson" required>
                 </form>
             </div>
             <div class="start-reset">
