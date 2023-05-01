@@ -17,6 +17,7 @@ const playerFactory = (name, mark) => {
 };
 
 const gameFlow = (() => {
+    let gameIsActive = false;
     const playerOne = null;
     const playerTwo = null;
     const setPlayers = () => {
@@ -36,7 +37,7 @@ const gameFlow = (() => {
         }
     }
 
-    return {setPlayers, getPlayers, placeMarker}
+    return {setPlayers, getPlayers, placeMarker, gameIsActive}
 })();
 
 const gameboard = (() => {
@@ -75,5 +76,5 @@ const gameboard = (() => {
 })();
 
 const displayController = (() => {
-      
+
 })();
