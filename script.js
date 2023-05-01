@@ -17,7 +17,21 @@ const playerFactory = (name, mark) => {
 };
 
 const gameFlow = (() => {
+
     let gameIsActive = false;
+    const setGameIsActive = () => {
+        if (gameIsActive === false) {
+            gameIsActive = true;
+        }
+        else {
+            gameIsActive = false;
+        }
+    }
+
+    const getGameIsActive = () => {
+        return gameIsActive;
+    }
+
     const playerOne = null;
     const playerTwo = null;
     const setPlayers = () => {
@@ -37,7 +51,7 @@ const gameFlow = (() => {
         }
     }
 
-    return {setPlayers, getPlayers, placeMarker, gameIsActive}
+    return {setPlayers, getPlayers, placeMarker, getGameIsActive}
 })();
 
 const gameboard = (() => {
@@ -77,4 +91,26 @@ const gameboard = (() => {
 
 const displayController = (() => {
 
+    const startResetListener = () => {
+        const button = document.querySelector('button.start-reset-button');
+        button.addEventListener('click', displayController.displayStartResetButton)
+    }
+
+    const displayStartResetButton = () => {
+        const buttonText = document.querySelector('#start-reset-text')
+        const buttonIcon = document.querySelector('#start-reset-icon')
+
+        if (gameFlow.getGameIsActive() === false) {
+            buttonText.textContent = 'Start game';
+            buttonIcon.textContent = 'start';
+        }
+        else {
+            buttonText.textContent = 'Reset game';
+            buttonIcon.textContent = 'restart_alt'
+        }
+    }
+
+    displayStartResetButton();
+
+    return {displayStartResetButton}
 })();
