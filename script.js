@@ -18,8 +18,8 @@ const playerFactory = (name, mark) => {
 
 const gameFlow = (() => {
 
-    let gameIsActive = false;
-    const setGameIsActive = () => {
+    let gameIsActive = true;
+    const toggleGameIsActive = () => {
         if (gameIsActive === false) {
             gameIsActive = true;
         }
@@ -51,7 +51,12 @@ const gameFlow = (() => {
         }
     }
 
-    return {setPlayers, getPlayers, placeMarker, getGameIsActive}
+    return {setPlayers, 
+            getPlayers, 
+            placeMarker, 
+            getGameIsActive,
+            toggleGameIsActive,
+        }
 })();
 
 const gameboard = (() => {
@@ -77,26 +82,14 @@ const gameboard = (() => {
 
     }
 
-    const _gameboardListeners = (row1, row2, row3) => {
-        const gameboardCells = document.querySelectorAll('.gameboard-cell');
-
-        gameboardCells.forEach(element => {
-            element.addEventListener('click', gameFlow.placeMarker)
-        });
-    }  
-
     _createGameboard();
-    _gameboardListeners();
 })();
 
 const displayController = (() => {
 
-    const startResetListener = () => {
-        const button = document.querySelector('button.start-reset-button');
-        button.addEventListener('click', displayController.displayStartResetButton)
-    }
-
-    const displayStartResetButton = () => {
+    const toggleStartResetButton = () => {
+        //Toggle gamestate
+        gameFlow.toggleGameIsActive();
         const buttonText = document.querySelector('#start-reset-text')
         const buttonIcon = document.querySelector('#start-reset-icon')
 
@@ -110,7 +103,24 @@ const displayController = (() => {
         }
     }
 
-    displayStartResetButton();
+    toggleStartResetButton();
+    return {toggleStartResetButton}
+})();
 
-    return {displayStartResetButton}
+const addListeners = (() => {
+    const addStartResetListener = () => {
+        const button = document.querySelector('button.start-reset-button');
+        button.addEventListener('click', displayController.toggleStartResetButton)
+    }
+
+    const addGameboardListeners = (row1, row2, row3) => {
+        const gameboardCells = document.querySelectorAll('.gameboard-cell');
+
+        gameboardCells.forEach(element => {
+            element.addEventListener('click', gameFlow.placeMarker)
+        });
+    }  
+
+    addStartResetListener();
+    addGameboardListeners();
 })();
