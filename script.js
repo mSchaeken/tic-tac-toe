@@ -43,10 +43,10 @@ const gameFlow = (() => {
         let playerTwoForm = document.querySelector('#player-two').value;
 
         if (playerOneForm === '' || playerTwoForm === '') {
-            playerOneForm = 'John';
-            playerTwoForm = 'Doe';
+            playerOneForm = 'Sherlock';
+            playerTwoForm = 'Watson';
         } 
-        
+
         gameFlow.playerOne = playerFactory(playerOneForm, 'X');
         gameFlow.playerTwo = playerFactory(playerTwoForm, 'O');
     }
