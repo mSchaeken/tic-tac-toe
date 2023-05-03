@@ -36,6 +36,35 @@ const gameFlow = (() => {
         return gameIsActive;
     }
 
+    let playerOneMarker = null;
+    let playerTwoMarker = null;
+    const setMarkers = function () {
+        //Switch
+        //Case player one (this.id) x gets clicked -> playerOneMarker = X && playerTwoMarker = O
+        //Case player one o gets clicked -> above in reverse
+        //Case player two x gets clicked -> playerOneMarker = X && playerTwoMarker = O
+        //Case player two O gets clicked -> above in reverse
+        switch (this.id) {
+            case 'player-one-o':
+                gameFlow.playerOneMarker = 'O';
+                gameFlow.playerTwoMarker = 'X';
+                break;
+            case 'player-one-x':
+                gameFlow.playerOneMarker = 'X';
+                gameFlow.playerTwoMarker = 'O';
+                break;
+            case 'player-two-o':
+                gameFlow.playerOneMarker = 'X';
+                gameFlow.playerTwoMarker = 'O';
+                break;
+            case 'player-two-x':
+                gameFlow.playerOneMarker = 'O';
+                gameFlow.playerTwoMarker = 'X';
+                break;
+        }
+       
+    }
+
     const playerOne = null;
     const playerTwo = null;
     const setPlayers = () => {
@@ -65,7 +94,8 @@ const gameFlow = (() => {
 
     return {
         setPlayers, 
-        getPlayers, 
+        getPlayers,
+        setMarkers, 
         placeMarker, 
         getGameIsActive,
         toggleGameIsActive
@@ -128,14 +158,22 @@ const addListeners = (() => {
         button.addEventListener('click', displayController.toggleStartResetButton)
     }
 
+    const addMarkerListeners = () => {
+        const buttons = document.querySelectorAll('.marker')
+        buttons.forEach(button => {
+            button.addEventListener('click', gameFlow.setMarkers);
+        });
+    }
+
     const addGameboardListeners = (row1, row2, row3) => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
 
         gameboardCells.forEach(element => {
-            element.addEventListener('click', gameFlow.placeMarker)
+            element.addEventListener('click', gameFlow.placeMarker);
         });
     }  
 
     addStartResetListener();
     addGameboardListeners();
+    addMarkerListeners();
 })();
