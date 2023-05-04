@@ -21,7 +21,7 @@ const playerFactory = (name, mark) => {
 
 const gameFlow = (() => {
 
-    let gameIsActive = true;
+    let gameIsActive = false;
     const toggleGameIsActive = () => {
         if (gameIsActive === false) {
             gameIsActive = true;
@@ -39,20 +39,20 @@ const gameFlow = (() => {
     const setMarkers = function () {
         switch (this.id) {
             case 'player-one-o':
-                gameFlow.playerOneMarker = 'O';
-                gameFlow.playerTwoMarker = 'X';
+                playerOneMarker = 'O';
+                playerTwoMarker = 'X';
                 break;
             case 'player-one-x':
-                gameFlow.playerOneMarker = 'X';
-                gameFlow.playerTwoMarker = 'O';
+                playerOneMarker = 'X';
+                playerTwoMarker = 'O';
                 break;
             case 'player-two-o':
-                gameFlow.playerOneMarker = 'X';
-                gameFlow.playerTwoMarker = 'O';
+                playerOneMarker = 'X';
+                playerTwoMarker = 'O';
                 break;
             case 'player-two-x':
-                gameFlow.playerOneMarker = 'O';
-                gameFlow.playerTwoMarker = 'X';
+                playerOneMarker = 'O';
+                playerTwoMarker = 'X';
                 break;
         }
        
@@ -69,8 +69,8 @@ const gameFlow = (() => {
             playerTwoForm = 'Watson';
         } 
 
-        gameFlow.playerOne = playerFactory(playerOneForm, gameFlow.playerOneMarker);
-        gameFlow.playerTwo = playerFactory(playerTwoForm, gameFlow.playerTwoMarker);
+        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker);
+        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker);
     }
 
     const getPlayers = () => {
@@ -85,13 +85,22 @@ const gameFlow = (() => {
         }
     }
 
+    const startGame = () => {
+        if (getGameIsActive() === false) {
+            toggleGameIsActive();
+            setPlayers();
+        }
+
+    }
+
     return {
         setPlayers, 
         getPlayers,
         setMarkers, 
-        placeMarker, 
+        placeMarker,
         getGameIsActive,
-        toggleGameIsActive
+        toggleGameIsActive,
+        startGame
     };
 })();
 
@@ -124,34 +133,16 @@ const gameboard = (() => {
 
 const displayController = (() => {
 
-    const toggleStartResetButton = () => {
-        //Toggle gamestate
-        gameFlow.toggleGameIsActive();
-        const buttonText = document.querySelector('#start-reset-text');
-        const buttonIcon = document.querySelector('#start-reset-icon');
-
-        if (gameFlow.getGameIsActive() === false) {
-            buttonText.textContent = 'Start game';
-            buttonIcon.textContent = 'start';
-        }
-        else {
-            buttonText.textContent = 'Reset game';
-            buttonIcon.textContent = 'restart_alt'
-        }
-    }
-
-    toggleStartResetButton();
-    return {toggleStartResetButton}
 })();
 
 const addListeners = (() => {
 
-    const addStartResetListener = () => {
-        const button = document.querySelector('button.start-reset-button');
-        button.addEventListener('click', displayController.toggleStartResetButton)
+    const addStartButtonListener = () => {
+        const button = document.querySelector('.start-button');
+        button.addEventListener('click', gameFlow.startGame);
     }
 
-    const addMarkerListeners = () => {
+    const addMarkerButtonListeners = () => {
         const buttons = document.querySelectorAll('.marker')
         buttons.forEach(button => {
             button.addEventListener('click', gameFlow.setMarkers);
@@ -166,7 +157,7 @@ const addListeners = (() => {
         });
     }  
 
-    addStartResetListener();
+    addStartButtonListener();
     addGameboardListeners();
-    addMarkerListeners();
+    addMarkerButtonListeners();
 })();
