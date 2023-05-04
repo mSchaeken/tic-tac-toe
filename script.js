@@ -106,7 +106,7 @@ const gameFlow = (() => {
     }
 
     const placeMarker = function () {
-        if (gameFlow.playerOne.getPlayerMark() === '') {
+        if (gameFlow.getActivePlayer() === gameFlow.playerOne.getName()) {
             this.textContent = gameFlow.playerOne.getPlayerMark();
         } else {
             this.textContent = gameFlow.playerTwo.getPlayerMark();
