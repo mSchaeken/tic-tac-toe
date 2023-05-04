@@ -1,25 +1,99 @@
-const playerFactory = (name, mark) => {
+const playerFactory = (name, mark, isTurnTrueOrFalse) => {
     const getName = () => name;
     const getPlayerMark = () => mark;
 
-    let isPlayerTurn = null;
-    const setPlayerTurn = (turnTrueOrFalse) => {
-        this.isPlayerTurn = turnTrueOrFalse
+    let isPlayerTurn = isTurnTrueOrFalse;
+    const setPlayerTurn = () => {
+        if (isPlayerTurn === true) {
+            isPlayerTurn = false;
+        } else {
+            isPlayerTurn = true;
+        }
     }
 
-    const getPlayerTurn = () => {
-        return this.isPlayerTurn
+    const getPlayerTurn = function () {
+        return isPlayerTurn
     }
 
-    return {getName, getPlayerMark, setPlayerTurn, getPlayerTurn};
+    return {
+        getName, 
+        getPlayerMark, 
+        setPlayerTurn, 
+        getPlayerTurn
+    };
 };
 
 const gameFlow = (() => {
+
+    let gameIsActive = false;
+    const _toggleGameIsActive = () => {
+        if (gameIsActive === false) {
+            gameIsActive = true;
+        } else {
+            gameIsActive = false;
+        }
+    }
+
+    const getGameIsActive = () => {
+        return gameIsActive;
+    }
+
+    let activePlayer = null;
+    const _setActivePlayer = () => {
+        activePlayer = gameFlow.playerOne.getName();
+    }
+
+    const _toggleActivePlayer = () => {
+        if (activePlayer === gameFlow.playerOne.getName()) {
+            activePlayer = gameFlow.playerTwo.getName();
+        } else {
+            activePlayer = gameFlow.playerOne.getName();
+        }
+    }
+
+    const getActivePlayer = () => {
+        return activePlayer;
+    }
+
+    let playerOneMarker = 'X';
+    let playerTwoMarker = 'O';
+    const setMarkers = function () {
+        switch (this.id) {
+            case 'player-one-o':
+                playerOneMarker = 'O';
+                playerTwoMarker = 'X';
+                break;
+            case 'player-one-x':
+                playerOneMarker = 'X';
+                playerTwoMarker = 'O';
+                break;
+            case 'player-two-o':
+                playerOneMarker = 'X';
+                playerTwoMarker = 'O';
+                break;
+            case 'player-two-x':
+                playerOneMarker = 'O';
+                playerTwoMarker = 'X';
+                break;
+        }
+       
+    }
+
     const playerOne = null;
     const playerTwo = null;
-    const setPlayers = () => {
-        gameFlow.playerOne = playerFactory(prompt('Player 1'), 'X');
-        gameFlow.playerTwo = playerFactory(prompt('Player 2'), 'O');
+    const _setPlayers = () => {
+        let playerOneForm = document.querySelector('#player-one').value;
+        let playerTwoForm = document.querySelector('#player-two').value;
+
+        if (playerOneForm === '' || playerTwoForm === '') {
+            playerOneForm = 'Sherlock';
+            playerTwoForm = 'Watson';
+        } 
+
+        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker, true);
+        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker, false);
+
+        _setActivePlayer();
     }
 
     const getPlayers = () => {
@@ -27,14 +101,31 @@ const gameFlow = (() => {
     }
 
     const placeMarker = function () {
-        if (gameFlow.playerOne.getPlayerMark() === true) {
+        if (gameFlow.playerOne.getPlayerMark() === '') {
             this.textContent = gameFlow.playerOne.getPlayerMark();
         } else {
             this.textContent = gameFlow.playerTwo.getPlayerMark();
         }
+
+        _toggleActivePlayer();
     }
 
-    return {setPlayers, getPlayers, placeMarker}
+    const startGame = () => {
+        if (getGameIsActive() === false) {
+            _toggleGameIsActive();
+            _setPlayers();
+        }
+
+    }
+
+    return {
+        getPlayers,
+        getActivePlayer,
+        setMarkers,
+        placeMarker,
+        getGameIsActive,
+        startGame
+    };
 })();
 
 const gameboard = (() => {
@@ -56,22 +147,41 @@ const gameboard = (() => {
             gameboard.append(gameboardCell);
         }
     }
+
     const _updateGameboard = (row1, row2, row3) => {
 
     }
 
-    const _gameboardListeners = (row1, row2, row3) => {
-        const gameboardCells = document.querySelectorAll('.gameboard-cell');
-
-        gameboardCells.forEach(element => {
-            element.addEventListener('click', gameFlow.placeMarker)
-        });
-    }  
-
     _createGameboard();
-    _gameboardListeners();
 })();
 
 const displayController = (() => {
-      
+
+})();
+
+const addListeners = (() => {
+
+    const addStartButtonListener = () => {
+        const button = document.querySelector('.start-button');
+        button.addEventListener('click', gameFlow.startGame);
+    }
+
+    const addMarkerButtonListeners = () => {
+        const buttons = document.querySelectorAll('.marker')
+        buttons.forEach(button => {
+            button.addEventListener('click', gameFlow.setMarkers);
+        });
+    }
+
+    const addGameboardListeners = (row1, row2, row3) => {
+        const gameboardCells = document.querySelectorAll('.gameboard-cell');
+
+        gameboardCells.forEach(element => {
+            element.addEventListener('click', gameFlow.placeMarker);
+        });
+    }  
+
+    addStartButtonListener();
+    addGameboardListeners();
+    addMarkerButtonListeners();
 })();
