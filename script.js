@@ -79,8 +79,8 @@ const gameFlow = (() => {
        
     }
 
-    const playerOne = null;
-    const playerTwo = null;
+    let playerOne = null;
+    let playerTwo = null;
     const _setPlayers = () => {
         let playerOneForm = document.querySelector('#player-one').value;
         let playerTwoForm = document.querySelector('#player-two').value;
@@ -100,6 +100,11 @@ const gameFlow = (() => {
         return [gameFlow.playerOne.getName(), gameFlow.playerTwo.getName()];
     }
 
+    const _resetPlayers = () => {
+        gameFlow.playerOne = null;
+        gameFlow.playerTwo = null;
+    }
+
     const placeMarker = function () {
         if (gameFlow.playerOne.getPlayerMark() === '') {
             this.textContent = gameFlow.playerOne.getPlayerMark();
@@ -113,9 +118,17 @@ const gameFlow = (() => {
     const startGame = () => {
         if (getGameIsActive() === false) {
             _toggleGameIsActive();
+            displayController.toggleGameInfoDisplay();
             _setPlayers();
         }
+    }
 
+    const resetGame = () => {
+        if (getGameIsActive() === true) {
+            _toggleGameIsActive();
+            displayController.toggleGameInfoDisplay();
+            _resetPlayers();
+        }
     }
 
     return {
@@ -124,7 +137,8 @@ const gameFlow = (() => {
         setMarkers,
         placeMarker,
         getGameIsActive,
-        startGame
+        startGame,
+        resetGame
     };
 })();
 
@@ -157,23 +171,46 @@ const gameboard = (() => {
 
 const displayController = (() => {
 
+    const toggleGameInfoDisplay = () => {
+        const gameActiveDiv = document.querySelector('.game-active-div');
+        const gameInactiveDiv = document.querySelector('.game-inactive-div');
+
+        if (gameFlow.getGameIsActive() === true) {
+            gameActiveDiv.style.display = 'block';
+            gameInactiveDiv.style.display = 'none';
+        } else {
+            gameActiveDiv.style.display = 'none';
+            gameInactiveDiv.style.display = 'block';
+        }
+    }
+
+    toggleGameInfoDisplay();
+
+    return {
+        toggleGameInfoDisplay
+    }
 })();
 
 const addListeners = (() => {
 
-    const addStartButtonListener = () => {
+    const _addStartButtonListener = () => {
         const button = document.querySelector('.start-button');
         button.addEventListener('click', gameFlow.startGame);
     }
 
-    const addMarkerButtonListeners = () => {
+    const _addResetButtonListener = () => {
+        const button = document.querySelector('.reset-button')
+        button.addEventListener('click', gameFlow.resetGame)
+    }
+
+    const _addMarkerButtonListeners = () => {
         const buttons = document.querySelectorAll('.marker')
         buttons.forEach(button => {
             button.addEventListener('click', gameFlow.setMarkers);
         });
     }
 
-    const addGameboardListeners = (row1, row2, row3) => {
+    const _addGameboardListeners = (row1, row2, row3) => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
 
         gameboardCells.forEach(element => {
@@ -181,7 +218,8 @@ const addListeners = (() => {
         });
     }  
 
-    addStartButtonListener();
-    addGameboardListeners();
-    addMarkerButtonListeners();
+    _addStartButtonListener();
+    _addResetButtonListener();
+    _addMarkerButtonListeners();
+    _addGameboardListeners();
 })();
