@@ -1,14 +1,18 @@
-const playerFactory = (name, mark) => {
+const playerFactory = (name, mark, isTurnTrueOrFalse) => {
     const getName = () => name;
     const getPlayerMark = () => mark;
 
-    let isPlayerTurn = null;
-    const setPlayerTurn = (turnTrueOrFalse) => {
-        this.isPlayerTurn = turnTrueOrFalse
+    let isPlayerTurn = isTurnTrueOrFalse;
+    const setPlayerTurn = () => {
+        if (isPlayerTurn === true) {
+            isPlayerTurn = false;
+        } else {
+            isPlayerTurn = true;
+        }
     }
 
-    const getPlayerTurn = () => {
-        return this.isPlayerTurn
+    const getPlayerTurn = function () {
+        return isPlayerTurn
     }
 
     return {
@@ -22,7 +26,7 @@ const playerFactory = (name, mark) => {
 const gameFlow = (() => {
 
     let gameIsActive = false;
-    const toggleGameIsActive = () => {
+    const _toggleGameIsActive = () => {
         if (gameIsActive === false) {
             gameIsActive = true;
         } else {
@@ -32,6 +36,23 @@ const gameFlow = (() => {
 
     const getGameIsActive = () => {
         return gameIsActive;
+    }
+
+    let activePlayer = null;
+    const _setActivePlayer = () => {
+        activePlayer = gameFlow.playerOne.getName();
+    }
+
+    const _toggleActivePlayer = () => {
+        if (activePlayer === gameFlow.playerOne.getName()) {
+            activePlayer = gameFlow.playerTwo.getName();
+        } else {
+            activePlayer = gameFlow.playerOne.getName();
+        }
+    }
+
+    const getActivePlayer = () => {
+        return activePlayer;
     }
 
     let playerOneMarker = 'X';
@@ -60,7 +81,7 @@ const gameFlow = (() => {
 
     const playerOne = null;
     const playerTwo = null;
-    const setPlayers = () => {
+    const _setPlayers = () => {
         let playerOneForm = document.querySelector('#player-one').value;
         let playerTwoForm = document.querySelector('#player-two').value;
 
@@ -69,8 +90,10 @@ const gameFlow = (() => {
             playerTwoForm = 'Watson';
         } 
 
-        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker);
-        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker);
+        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker, true);
+        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker, false);
+
+        _setActivePlayer();
     }
 
     const getPlayers = () => {
@@ -78,28 +101,29 @@ const gameFlow = (() => {
     }
 
     const placeMarker = function () {
-        if (gameFlow.playerOne.getPlayerMark() === true) {
+        if (gameFlow.playerOne.getPlayerMark() === '') {
             this.textContent = gameFlow.playerOne.getPlayerMark();
         } else {
             this.textContent = gameFlow.playerTwo.getPlayerMark();
         }
+
+        _toggleActivePlayer();
     }
 
     const startGame = () => {
         if (getGameIsActive() === false) {
-            toggleGameIsActive();
-            setPlayers();
+            _toggleGameIsActive();
+            _setPlayers();
         }
 
     }
 
     return {
-        setPlayers, 
         getPlayers,
-        setMarkers, 
+        getActivePlayer,
+        setMarkers,
         placeMarker,
         getGameIsActive,
-        toggleGameIsActive,
         startGame
     };
 })();
