@@ -1,5 +1,3 @@
-// I think my brain is having an official meltdown on the Tic-Tac-Toe project. Going from the library project to this one feels like I missed a lesson or fifty haha.
-
 const playerFactory = (name, mark) => {
     const getName = () => name;
     const getPlayerMark = () => mark;
@@ -36,14 +34,9 @@ const gameFlow = (() => {
         return gameIsActive;
     }
 
-    let playerOneMarker = null;
-    let playerTwoMarker = null;
+    let playerOneMarker = 'X';
+    let playerTwoMarker = 'O';
     const setMarkers = function () {
-        //Switch
-        //Case player one (this.id) x gets clicked -> playerOneMarker = X && playerTwoMarker = O
-        //Case player one o gets clicked -> above in reverse
-        //Case player two x gets clicked -> playerOneMarker = X && playerTwoMarker = O
-        //Case player two O gets clicked -> above in reverse
         switch (this.id) {
             case 'player-one-o':
                 gameFlow.playerOneMarker = 'O';
@@ -76,8 +69,8 @@ const gameFlow = (() => {
             playerTwoForm = 'Watson';
         } 
 
-        gameFlow.playerOne = playerFactory(playerOneForm, 'X');
-        gameFlow.playerTwo = playerFactory(playerTwoForm, 'O');
+        gameFlow.playerOne = playerFactory(playerOneForm, gameFlow.playerOneMarker);
+        gameFlow.playerTwo = playerFactory(playerTwoForm, gameFlow.playerTwoMarker);
     }
 
     const getPlayers = () => {
