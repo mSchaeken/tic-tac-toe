@@ -1,5 +1,3 @@
-// I think my brain is having an official meltdown on the Tic-Tac-Toe project. Going from the library project to this one feels like I missed a lesson or fifty haha.
-
 const playerFactory = (name, mark) => {
     const getName = () => name;
     const getPlayerMark = () => mark;
