@@ -154,6 +154,11 @@ const gameboard = (() => {
         middleRow: [null, null, null],
         bottomRow: [null, null, null]
     }
+
+    //Function  for testing purposes
+    const checkGameboard = () => {
+        return gameboardRows
+    }
     
     const resetGameboard = () => {
             gameboardRows.topRow = [null, null, null],
@@ -167,13 +172,14 @@ const gameboard = (() => {
         //If topRow[0] && middleRow[1] && bottomRow[2] are equal -> game over
         //If bottomRow[0] && middleRow[1] && topRow[2] are equal -> game over
         //If all rows have no NULL values anymore -> game over
+        console.log('test')
         if (gameboardRows.bottomRow.find(
             (element) =>
             element === gameFlow.getInactivePlayer().getPlayerMark() ||
             element === null
             ) 
             === undefined) {
-                // alert(`${gameFlow.getActivePlayer().getName()} wins!`)
+                alert(`${gameFlow.getActivePlayer().getName()} wins!`)
             }
     }
 
@@ -181,8 +187,10 @@ const gameboard = (() => {
         cellIndex = parseInt(index);
 
         switch (true) {
-            //Subtraction in indices is to account for the arrays being split up in three separate arrays
-            //while the HTML elements are indexed from 0-8
+            /*
+            Subtraction in indices is to account for the arrays being split up in 
+            three separate arrays and the HTML elements being indexed from 0-8
+            */
             case (cellIndex < 3):
                 if (gameboardRows.bottomRow[cellIndex] === null) {
                     return true;
@@ -204,14 +212,15 @@ const gameboard = (() => {
         }
     }
 
-    const updateGameboardRows = function (element) {
+    const _updateGameboardRows = function (element) {
         const that = element;
         const cellIndex = parseInt(that.id);
-        console.log(_checkIfValidMove(that.id))
  
         if (_checkIfValidMove(that.id) === true) {
-            //Subtraction in indices is to account for the arrays being split up in three separate arrays
-            //while the HTML elements are indexed from 0-8
+            /*
+            Subtraction in indices is to account for the arrays being split up in 
+            three separate arrays and the HTML elements being indexed from 0-8
+            */
             switch (true) {
                 case (cellIndex < 3):
                     gameboardRows.bottomRow[cellIndex] = gameFlow.getActivePlayer().getPlayerMark()
@@ -229,21 +238,24 @@ const gameboard = (() => {
     const placeMarker = function () {
         const that = this
 
-        if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
-            this.textContent = gameFlow.playerOne.getPlayerMark();
-        } else {
-            this.textContent = gameFlow.playerTwo.getPlayerMark();
+        if (_checkIfValidMove(that.id) === true) {
+            if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
+                this.value = gameFlow.playerOne.getPlayerMark();
+                _updateGameboardRows(that);
+                gameFlow.toggleActivePlayer();
+            } else {
+                this.value = gameFlow.playerTwo.getPlayerMark();
+                _updateGameboardRows(that);
+                gameFlow.toggleActivePlayer();
+            }
         }
-
-        gameboard.updateGameboardRows(that);
-        gameFlow.toggleActivePlayer();
     }
 
     return {
-        updateGameboardRows,
         resetGameboard,
         checkForGameOver,
-        placeMarker
+        placeMarker,
+        checkGameboard
     }
 })();
 
@@ -275,19 +287,24 @@ const displayController = (() => {
         });
     }
 
-    const _createGameboard = () => {
+    const _displayGameboard = () => {
         const gameboard = document.querySelector('.gameboard-container');
         
         for (i = 0;  i < 9; i++) {
-            const gameboardCell = document.createElement('div');
+            const gameboardCell = document.createElement('input');
             gameboardCell.className = 'gameboard-cell';
+            /*
+            (8 - i) was neccesary to start the index at 0 in the bottom row on screen.
+            Turned out to be a lot less practical than I thought, so might change this
+            later on but requires a fair bit of refactoring.
+            */
             gameboardCell.id = (8 - i);
             gameboard.append(gameboardCell);
         }
     }
 
     toggleGameInfoDisplay();
-    _createGameboard();
+    _displayGameboard();
 
     return {
         toggleGameInfoDisplay,
@@ -322,9 +339,9 @@ const addListeners = (() => {
         });
 
         gameboardCells.forEach(element => {
-            element.addEventListener('click', gameboard.checkForGameOver)
+            element.addEventListener('input', gameboard.checkForGameOver)
         });
-    }  
+    } 
 
     _addStartButtonListener();
     _addResetButtonListener();
