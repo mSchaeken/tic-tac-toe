@@ -1,25 +1,10 @@
 const playerFactory = (name, mark, isTurnTrueOrFalse) => {
     const getName = () => name;
-    const getPlayerMark = () => mark;
-
-    let isPlayerTurn = isTurnTrueOrFalse;
-    const setPlayerTurn = () => {
-        if (isPlayerTurn === true) {
-            isPlayerTurn = false;
-        } else {
-            isPlayerTurn = true;
-        }
-    }
-
-    const getPlayerTurn = function () {
-        return isPlayerTurn
-    }
+    const getMark = () => mark;
 
     return {
         getName, 
-        getPlayerMark, 
-        setPlayerTurn, 
-        getPlayerTurn
+        getMark, 
     };
 };
 
@@ -59,10 +44,10 @@ const gameFlow = (() => {
     const toggleActivePlayer = () => {
         if (activePlayer === gameFlow.playerOne) {
             activePlayer = gameFlow.playerTwo;
-            inactivePlayer = gameFlow.playerOne
+            inactivePlayer = gameFlow.playerOne;
         } else {
             activePlayer = gameFlow.playerOne;
-            inactivePlayer = gameFlow.playerTwo
+            inactivePlayer = gameFlow.playerTwo;
         }
     }
 
@@ -166,22 +151,51 @@ const gameboard = (() => {
             gameboardRows.bottomRow = [null, null, null]
     }
 
-    const checkForGameOver = () => {
-        //If one of three rows have equal values -> game over
-        //If each similar index in three rows have equal values -> game over
-        //If topRow[0] && middleRow[1] && bottomRow[2] are equal -> game over
-        //If bottomRow[0] && middleRow[1] && topRow[2] are equal -> game over
-        //If all rows have no NULL values anymore -> game over
-        console.log('test')
-        if (gameboardRows.bottomRow.find(
-            (element) =>
-            element === gameFlow.getInactivePlayer().getPlayerMark() ||
-            element === null
-            ) 
-            === undefined) {
-                alert(`${gameFlow.getActivePlayer().getName()} wins!`)
+    const _checkForGameOver = () => {
+
+        //Pseudo
+        //If one of three rows have equal non-NULL values-> game over
+        //If each similar index in three rows have equal non-NULL values-> game over
+        //If topRow[0] && middleRow[1] && bottomRow[2] are equal non-NULL values -> game over
+        //If bottomRow[0] && middleRow[1] && topRow[2] are equal non-NULL values -> game over
+        //If all rows have no NULL values anymore -> game over (tie)
+
+        const allRows = [
+            gameboardRows.bottomRow,
+            gameboardRows.middleRow,
+            gameboardRows.topRow
+        ];
+
+        const activeMark = gameFlow.getActivePlayer().getMark();
+        const inactiveMark = gameFlow.getInactivePlayer().getMark();
+        const activePlayer = gameFlow.getActivePlayer().getName();
+
+        const checkRow = function (row) {
+            return row.find(
+              (mark) => mark === inactiveMark || mark === null
+            );
+          };
+
+        allRows.forEach(row => {
+            if (checkRow(row) === undefined) {
+                console.log(`${activePlayer} wins!`)
+                return;
             }
-    }
+        })
+        
+        for (let i = 0; i < 3; i++) {
+            let verticalRow = [];
+
+            allRows.forEach(row => {
+                verticalRow.push(row[i]);
+            })
+
+            if (checkRow(verticalRow) === undefined) {
+                console.log(`${activePlayer} wins!`);
+                return;
+            }
+        }
+    };
 
     const _checkIfValidMove = function (index) {
         cellIndex = parseInt(index);
@@ -223,13 +237,13 @@ const gameboard = (() => {
             */
             switch (true) {
                 case (cellIndex < 3):
-                    gameboardRows.bottomRow[cellIndex] = gameFlow.getActivePlayer().getPlayerMark()
+                    gameboardRows.bottomRow[cellIndex] = gameFlow.getActivePlayer().getMark()
                     break;
                 case (cellIndex >= 3 && cellIndex < 6):
-                    gameboardRows.middleRow[cellIndex - 3] = gameFlow.getActivePlayer().getPlayerMark()
+                    gameboardRows.middleRow[cellIndex - 3] = gameFlow.getActivePlayer().getMark()
                     break;
                 case (cellIndex >= 6 && cellIndex < 9):
-                    gameboardRows.topRow[cellIndex - 6] = gameFlow.getActivePlayer().getPlayerMark()
+                    gameboardRows.topRow[cellIndex - 6] = gameFlow.getActivePlayer().getMark()
                     break;
             }
         }
@@ -238,14 +252,18 @@ const gameboard = (() => {
     const placeMarker = function () {
         const that = this
 
-        if (_checkIfValidMove(that.id) === true) {
+        if (_checkIfValidMove(that.id) === true &&
+            gameFlow.getGameIsActive() === true) {
+
             if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
-                this.value = gameFlow.playerOne.getPlayerMark();
+                this.textContent = gameFlow.playerOne.getMark();
                 _updateGameboardRows(that);
+                _checkForGameOver();
                 gameFlow.toggleActivePlayer();
             } else {
-                this.value = gameFlow.playerTwo.getPlayerMark();
+                this.textContent = gameFlow.playerTwo.getMark();
                 _updateGameboardRows(that);
+                _checkForGameOver();
                 gameFlow.toggleActivePlayer();
             }
         }
@@ -253,7 +271,6 @@ const gameboard = (() => {
 
     return {
         resetGameboard,
-        checkForGameOver,
         placeMarker,
         checkGameboard
     }
@@ -291,7 +308,7 @@ const displayController = (() => {
         const gameboard = document.querySelector('.gameboard-container');
         
         for (i = 0;  i < 9; i++) {
-            const gameboardCell = document.createElement('input');
+            const gameboardCell = document.createElement('div');
             gameboardCell.className = 'gameboard-cell';
             /*
             (8 - i) was neccesary to start the index at 0 in the bottom row on screen.
@@ -336,10 +353,6 @@ const addListeners = (() => {
 
         gameboardCells.forEach(element => {
             element.addEventListener('click', gameboard.placeMarker);
-        });
-
-        gameboardCells.forEach(element => {
-            element.addEventListener('input', gameboard.checkForGameOver)
         });
     } 
 
