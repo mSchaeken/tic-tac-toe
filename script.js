@@ -40,14 +40,14 @@ const gameFlow = (() => {
 
     let activePlayer = null;
     const _setActivePlayer = () => {
-        activePlayer = gameFlow.playerOne.getName();
+        activePlayer = gameFlow.playerOne;
     }
 
     const _toggleActivePlayer = () => {
-        if (activePlayer === gameFlow.playerOne.getName()) {
-            activePlayer = gameFlow.playerTwo.getName();
+        if (activePlayer === gameFlow.playerOne) {
+            activePlayer = gameFlow.playerTwo;
         } else {
-            activePlayer = gameFlow.playerOne.getName();
+            activePlayer = gameFlow.playerOne;
         }
     }
 
@@ -106,7 +106,7 @@ const gameFlow = (() => {
     }
 
     const placeMarker = function () {
-        if (gameFlow.getActivePlayer() === gameFlow.playerOne.getName()) {
+        if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
             this.textContent = gameFlow.playerOne.getPlayerMark();
         } else {
             this.textContent = gameFlow.playerTwo.getPlayerMark();
@@ -152,6 +152,18 @@ const gameboard = (() => {
         bottomRow: [null, null, null]
     }
 
+    const _checkForGameOver = () => {
+        //If one of three rows have equal values -> game over
+        //If each similar index in three rows have equal values -> game over
+        //If topRow[0] && middleRow[1] && bottomRow[2] are equal -> game over
+        //If bottomRow[0] && middleRow[1] && topRow[2] are equal -> game over
+        //If all rows have no NULL values anymore -> game over
+    }
+
+    const _checkIfValidMove = () => {
+        //If value in array != NULL -> not valid
+    }
+
     const _createGameboard = () => {
         const gameboard = document.querySelector('.gameboard-container');
         
@@ -163,7 +175,7 @@ const gameboard = (() => {
         }
     }
 
-    const _updateGameboard = (row1, row2, row3) => {
+    const updateGameboardRows = function () {
 
     }
 
@@ -187,8 +199,14 @@ const displayController = (() => {
 
     const clearGameboardDisplay = () => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
+        const playerNameFields = document.querySelectorAll('input');
+
         gameboardCells.forEach(gameboardCell => {
             gameboardCell.textContent = '';
+        });
+
+        playerNameFields.forEach(playerNameField => {
+            playerNameField.value = '';
         });
     }
 
