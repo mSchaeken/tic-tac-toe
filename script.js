@@ -43,16 +43,27 @@ const gameFlow = (() => {
         activePlayer = gameFlow.playerOne;
     }
 
-    const _toggleActivePlayer = () => {
-        if (activePlayer === gameFlow.playerOne) {
-            activePlayer = gameFlow.playerTwo;
-        } else {
-            activePlayer = gameFlow.playerOne;
-        }
+    let inactivePlayer = null;
+    const _setInactivePlayer = () => {
+        inactivePlayer = gameFlow.playerTwo;
     }
 
     const getActivePlayer = () => {
         return activePlayer;
+    }
+    
+    const getInactivePlayer = () => {
+        return inactivePlayer;
+    }
+
+    const _toggleActivePlayer = () => {
+        if (activePlayer === gameFlow.playerOne) {
+            activePlayer = gameFlow.playerTwo;
+            inactivePlayer = gameFlow.playerOne
+        } else {
+            activePlayer = gameFlow.playerOne;
+            inactivePlayer = gameFlow.playerTwo
+        }
     }
 
     let playerOneMarker = 'X';
@@ -94,6 +105,7 @@ const gameFlow = (() => {
         gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker, false);
 
         _setActivePlayer();
+        _setInactivePlayer();
     }
 
     const getPlayers = () => {
@@ -106,12 +118,15 @@ const gameFlow = (() => {
     }
 
     const placeMarker = function () {
+        const that = this
+
         if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
             this.textContent = gameFlow.playerOne.getPlayerMark();
         } else {
             this.textContent = gameFlow.playerTwo.getPlayerMark();
         }
 
+        gameboard.updateGameboardRows(that);
         _toggleActivePlayer();
     }
 
@@ -127,14 +142,16 @@ const gameFlow = (() => {
         if (getGameIsActive() === true) {
             _toggleGameIsActive();
             displayController.toggleGameInfoDisplay();
-            displayController.clearGameboardDisplay();
+            displayController.clearDisplay();
             _resetPlayers();
+            gameboard.resetGameboard();
         }
     }
 
     return {
         getPlayers,
         getActivePlayer,
+        getInactivePlayer,
         setMarkers,
         placeMarker,
         getGameIsActive,
@@ -146,22 +163,15 @@ const gameFlow = (() => {
 const gameboard = (() => {
 
     const gameboardRows = {
-        //Change values in array to NULL later to facilitate checking if a spot is empty or not
         topRow: [null, null, null],
         middleRow: [null, null, null],
         bottomRow: [null, null, null]
     }
-
-    const _checkForGameOver = () => {
-        //If one of three rows have equal values -> game over
-        //If each similar index in three rows have equal values -> game over
-        //If topRow[0] && middleRow[1] && bottomRow[2] are equal -> game over
-        //If bottomRow[0] && middleRow[1] && topRow[2] are equal -> game over
-        //If all rows have no NULL values anymore -> game over
-    }
-
-    const _checkIfValidMove = () => {
-        //If value in array != NULL -> not valid
+    
+    const resetGameboard = () => {
+            gameboardRows.topRow = [null, null, null],
+            gameboardRows.middleRow = [null, null, null],
+            gameboardRows.bottomRow = [null, null, null]
     }
 
     const _createGameboard = () => {
@@ -170,16 +180,83 @@ const gameboard = (() => {
         for (i = 0;  i < 9; i++) {
             const gameboardCell = document.createElement('div');
             gameboardCell.className = 'gameboard-cell';
-            gameboardCell.id = i;
+            gameboardCell.id = (8 - i);
             gameboard.append(gameboardCell);
         }
     }
 
-    const updateGameboardRows = function () {
 
+    const checkForGameOver = () => {
+        //If one of three rows have equal values -> game over
+        //If each similar index in three rows have equal values -> game over
+        //If topRow[0] && middleRow[1] && bottomRow[2] are equal -> game over
+        //If bottomRow[0] && middleRow[1] && topRow[2] are equal -> game over
+        //If all rows have no NULL values anymore -> game over
+        console.log('test')
+        if (gameboardRows.bottomRow.find(
+            (element) =>
+            element === gameFlow.getInactivePlayer().getPlayerMark() ||
+            element === null
+            ) 
+            === undefined) {
+                alert(`${gameFlow.getActivePlayer().getName()} wins!`)
+            }
+    }
+
+    const _checkIfValidMove = function (index) {
+        cellIndex = parseInt(index);
+
+        switch (true) {
+            case (cellIndex < 3):
+                if (gameboardRows.bottomRow[cellIndex] === null) {
+                    return true;
+                } else {
+                    return false;
+                }
+            case (cellIndex >= 3 && cellIndex < 6):
+                if (gameboardRows.middleRow[cellIndex - 3] === null) {
+                    return true;
+                } else {
+                    return false;
+                }                
+            case (cellIndex >= 6 && cellIndex < 9):
+                if (gameboardRows.topRow[cellIndex - 6] === null) {
+                    return true;
+                } else {
+                    return false;
+                }            
+        }
+    }
+
+    const updateGameboardRows = function (element) {
+        const that = element;
+        const cellIndex = parseInt(that.id);
+ 
+        if (_checkIfValidMove(that.id) === true) {
+            //Subtraction in indexes is to account for the arrays being split up in three separate arrays
+            //while the HTML elements are indexed from 0-8
+            switch (true) {
+                case (cellIndex < 3):
+                    gameboardRows.bottomRow[cellIndex] = gameFlow.getActivePlayer().getPlayerMark()
+                    break;
+                case (cellIndex >= 3 && cellIndex < 6):
+                    gameboardRows.middleRow[cellIndex - 3] = gameFlow.getActivePlayer().getPlayerMark()
+                    break;
+                case (cellIndex >= 6 && cellIndex < 9):
+                    gameboardRows.topRow[cellIndex - 6] = gameFlow.getActivePlayer().getPlayerMark()
+                    break;
+            }
+        }
+        console.log(gameboardRows)
     }
 
     _createGameboard();
+
+    return {
+        updateGameboardRows,
+        resetGameboard,
+        checkForGameOver
+    }
 })();
 
 const displayController = (() => {
@@ -197,7 +274,7 @@ const displayController = (() => {
         }
     }
 
-    const clearGameboardDisplay = () => {
+    const clearDisplay = () => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
         const playerNameFields = document.querySelectorAll('input');
 
@@ -214,7 +291,7 @@ const displayController = (() => {
 
     return {
         toggleGameInfoDisplay,
-        clearGameboardDisplay
+        clearDisplay
     }
 })();
 
@@ -242,6 +319,10 @@ const addListeners = (() => {
 
         gameboardCells.forEach(element => {
             element.addEventListener('click', gameFlow.placeMarker);
+        });
+
+        gameboardCells.forEach(element => {
+            element.addEventListener('click', gameboard.checkForGameOver)
         });
     }  
 
