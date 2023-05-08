@@ -127,6 +127,7 @@ const gameFlow = (() => {
         if (getGameIsActive() === true) {
             _toggleGameIsActive();
             displayController.toggleGameInfoDisplay();
+            displayController.clearGameboardDisplay();
             _resetPlayers();
         }
     }
@@ -184,10 +185,18 @@ const displayController = (() => {
         }
     }
 
+    const clearGameboardDisplay = () => {
+        const gameboardCells = document.querySelectorAll('.gameboard-cell');
+        gameboardCells.forEach(gameboardCell => {
+            gameboardCell.textContent = '';
+        });
+    }
+
     toggleGameInfoDisplay();
 
     return {
-        toggleGameInfoDisplay
+        toggleGameInfoDisplay,
+        clearGameboardDisplay
     }
 })();
 
