@@ -1,4 +1,4 @@
-const playerFactory = (name, mark, isTurnTrueOrFalse) => {
+const playerFactory = (name, mark) => {
     const getName = () => name;
     const getMark = () => mark;
 
@@ -86,8 +86,8 @@ const gameFlow = (() => {
             playerTwoForm = 'Watson';
         } 
 
-        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker, true);
-        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker, false);
+        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker);
+        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker);
 
         _setActivePlayer();
         _setInactivePlayer();
@@ -216,6 +216,22 @@ const gameboard = (() => {
                 return;
             }
         });
+
+        let rowFullCounter = 0
+        allRows.forEach(row => {
+            if (
+                row[0] !== null &
+                row[1] !== null &
+                row[2] !== null
+                ) {
+                rowFullCounter ++;
+            }
+        })
+
+        if (rowFullCounter === 3) {
+            console.log('Its a tie!');
+            return;
+        }
     };
 
     const _checkIfValidMove = function (index) {
