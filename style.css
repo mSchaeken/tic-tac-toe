@@ -80,7 +80,7 @@ button {
     width: 70vw;
     min-height: 200px;
     height: 15vh;
-    background-color: var(--grey-blue);
+    background-color: white;
     color: var(--federal-blue);
 }
 
@@ -92,13 +92,9 @@ button {
     width: 70vw;
     min-height: 200px;
     height: 15vh;
+    background-color: white;
     border-style: solid;
     border-color: var(--federal-blue);
-}
-
-.game-active-div:active {
-    opacity: 1;
-    transition: 0.5s;
 }
 
 .player-form-div {
@@ -196,8 +192,9 @@ div.reset-div {
 
 .start-button:hover {
     transition: 0.5s;
-    background-color: white;
-    color: var(--federal-blue);
+
+    background-color: var(--pacific-cyan);
+    color: white;
 }
 
 .reset-button {
