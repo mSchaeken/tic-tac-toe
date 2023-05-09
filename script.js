@@ -458,6 +458,7 @@ const displayController = (() => {
         }
     }
 
+    displayPlayerMarker('X');
     toggleGameInfoDisplay();
     _displayGameboard();
 
