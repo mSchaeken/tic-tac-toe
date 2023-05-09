@@ -172,8 +172,8 @@ const gameboard = (() => {
         //Check for horizontal wins
         allRows.forEach(row => {
             if (checkRow(row) === undefined) {
-                console.log(`${activePlayer} wins!`)
                 displayController.toggleNewGameButton();
+                displayController.displayWinner(gameFlow.getActivePlayer().getName())
                 return;
             }
         })
@@ -187,8 +187,8 @@ const gameboard = (() => {
             })
 
             if (checkRow(verticalRow) === undefined) {
-                console.log(`${activePlayer} wins!`);
                 displayController.toggleNewGameButton();
+                displayController.displayWinner(gameFlow.getActivePlayer().getName())
                 return;
             };
         };
@@ -212,8 +212,8 @@ const gameboard = (() => {
 
         diagonalRows.forEach(row => {
             if (checkRow(row) === undefined) {
-                console.log(`${activePlayer} wins!`);
                 displayController.toggleNewGameButton();
+                displayController.displayWinner(gameFlow.getActivePlayer().getName())
                 return;
             }
         });
@@ -231,8 +231,8 @@ const gameboard = (() => {
         })
 
         if (rowFullCounter === 3) {
-            console.log('Its a tie!');
             displayController.toggleNewGameButton();
+            displayController.displayWinner(null)
             return;
         }
     };
@@ -344,10 +344,6 @@ const displayController = (() => {
     }
 
     const displayPlayerMarker = (mark) => {
-        // const playerOneMarker = document.createElement('span');
-        // const playerTwoMarker = document.createElement('span');
-        // playerOneMarker.className = 'material-symbols-outlined';    
-        // playerTwoMarker.className = 'material-symbols-outlined';
         const playerOneMarkerSpan = document.querySelector('#player-one-span');
         const playerTwoMarkerSpan = document.querySelector('#player-two-span');
 
@@ -401,6 +397,22 @@ const displayController = (() => {
         playerTwoMark.append(markSpanTwo);  
     }
 
+    const displayWinner = (player) => {
+        const playerOne = document.querySelector('.player-one-winner');
+        const playerTwo = document.querySelector('.player-two-winner');
+
+        if (player === gameFlow.getPlayers()[0]) {
+            playerOne.textContent = 'Wins!';
+            playerTwo.textContent = 'Loses.';
+        } else if (player === gameFlow.getPlayers()[1]){
+            playerOne.textContent = 'Loses.';
+            playerTwo.textContent = 'Wins!';
+        } else {
+            playerOne.textContent = 'Tie.'
+            playerTwo.textContent = 'Tie.'
+        }
+    }
+
     const clearDisplay = () => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
         const playerNameFields = document.querySelectorAll('input');
@@ -439,6 +451,7 @@ const displayController = (() => {
         displayPlayerMarker,
         displayActiveGameInfo,
         clearActiveGameInfo,
+        displayWinner,
         clearDisplay
     }
 })();
