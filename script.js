@@ -290,18 +290,28 @@ const gameboard = (() => {
     }
 
     const placeMarker = function () {
-        const that = this
+        const that = this;
+        let playerOneMark = null;
+        let playerTwoMark = null;
+
+        if (gameFlow.playerOne.getMark() === 'X') {
+            playerOneMark = 'close';
+            playerTwoMark = 'circle';
+        } else {
+            playerOneMark = 'circle';
+            playerTwoMark = 'close';
+        }
 
         if (_checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
 
             if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
-                this.textContent = gameFlow.playerOne.getMark();
+                this.textContent = playerOneMark;
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
             } else {
-                this.textContent = gameFlow.playerTwo.getMark();
+                this.textContent = playerTwoMark;
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
@@ -430,8 +440,8 @@ const displayController = (() => {
         const gameboard = document.querySelector('.gameboard-container');
         
         for (i = 0;  i < 9; i++) {
-            const gameboardCell = document.createElement('div');
-            gameboardCell.className = 'gameboard-cell';
+            const gameboardCell = document.createElement('span');
+            gameboardCell.className = 'gameboard-cell material-symbols-outlined';
             /*
             (8 - i) was neccesary to start the index at 0 in the bottom row on screen.
             Turned out to be a lot less practical than I thought, so might change this
