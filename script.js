@@ -317,11 +317,11 @@ const displayController = (() => {
         const gameInactiveDiv = document.querySelector('.game-inactive-div');
 
         if (gameFlow.getGameIsActive() === true) {
-            gameActiveDiv.style.display = 'block';
+            gameActiveDiv.style.display = 'flex';
             gameInactiveDiv.style.display = 'none';
         } else {
             gameActiveDiv.style.display = 'none';
-            gameInactiveDiv.style.display = 'block';
+            gameInactiveDiv.style.display = 'flex';
         }
     }
 

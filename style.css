@@ -19,7 +19,7 @@ main {
 
 h1 {
     margin-top: 10vh;
-    margin-bottom: 10vh;
+    margin-bottom: 5vh;
     color: var(--federal-blue);
 }
 
@@ -73,6 +73,7 @@ button {
     flex-direction: column;
     border-style: solid;
     border-width: 2px;
+    border-radius: 16px;
     padding: 8px;
     padding-bottom: 16px;
     background-color: var(--pacific-cyan);
@@ -81,7 +82,10 @@ button {
 
 .game-active-div {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 700px;
+    width: 50vw;
 }
 
 .player-form-div {
@@ -96,6 +100,25 @@ button {
     flex-direction: column;
     align-items: center;
     gap: 16px;
+}
+
+.player-game-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-one-info,
+.player-two-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+    gap: 8px;
+    margin: 16px;
+    margin-right: 32px;
+    margin-left: 32px;
 }
 
 .marker-icons {
@@ -116,16 +139,40 @@ button {
     border-width: 2px;
 }
 
-.start-div {
+.start-div,
+.reset-div {
     display: flex;
     justify-content: center;
     margin-top: 8px;
 }
 
-.start-button {
+div.reset-div {
+    height: 5vh;
+    flex-direction: column;
+    align-items: center;
+    margin: 16px;
+}
+
+.start-button,
+.reset-button {
     width: 11vw;
     background-color: white;
     color: black;
+    border-color: white;
+    border-radius: 4px;
     font-weight: 600;
     padding-top: 4px;
+}
+
+.reset-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin: 4px;
+    padding: 4px;
+    gap: 4px;
+    justify-content: space-evenly;
+    background-color: var(--pacific-cyan);
 }
