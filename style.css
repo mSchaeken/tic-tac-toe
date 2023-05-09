@@ -126,6 +126,10 @@ button {
     margin-left: 32px;
 }
 
+.player-marker-div {
+    margin-top: 8px;
+}
+
 .marker-icons {
     width: 5vw;
     display: flex;
@@ -144,10 +148,16 @@ button {
     border-width: 2px;
 }
 
+.marker:hover {
+    transition: 0.5s;
+    background-color: cyan;
+}
+
 .start-div,
 .reset-div {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 8px;
 }
 
@@ -162,12 +172,18 @@ div.reset-div {
 .start-button,
 .reset-button {
     width: 11vw;
-    background-color: white;
-    color: black;
+    color: white;
+    background-color: var(--honolulu-blue);
     border-color: white;
     border-radius: 4px;
     font-weight: 600;
     padding-top: 4px;
+}
+
+.start-button:hover {
+    transition: 0.5s;
+    background-color: white;
+    color: var(--federal-blue);
 }
 
 .reset-button {
@@ -181,4 +197,12 @@ div.reset-div {
     gap: 4px;
     justify-content: space-evenly;
     background-color: var(--pacific-cyan);
+}
+
+.reset-button:hover {
+    transition: 0.2s;
+    background-color: whitesmoke;
+    color: var(--federal-blue);
+    border-color: var(--federal-blue);
+    border-width: 2px;
 }

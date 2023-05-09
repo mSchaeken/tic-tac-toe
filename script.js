@@ -71,7 +71,7 @@ const gameFlow = (() => {
                 playerTwoMarker = 'X';
                 break;
         }
-       
+        displayController.displayPlayerMarker(playerOneMarker);
     }
 
     let playerOne = null;
@@ -343,6 +343,28 @@ const displayController = (() => {
         }
     }
 
+    const displayPlayerMarker = (mark) => {
+        // const playerOneMarker = document.createElement('span');
+        // const playerTwoMarker = document.createElement('span');
+        // playerOneMarker.className = 'material-symbols-outlined';    
+        // playerTwoMarker.className = 'material-symbols-outlined';
+        const playerOneMarkerSpan = document.querySelector('#player-one-span');
+        const playerTwoMarkerSpan = document.querySelector('#player-two-span');
+
+        if (gameFlow.getGameIsActive() === true) {
+            playerOneMarkerSpan.textContent = '';
+            playerTwoMarkerSpan.textContent = '';
+        }  else {
+            if (mark === 'X') {
+                playerOneMarkerSpan.textContent = 'close';
+                playerTwoMarkerSpan.textContent = 'circle';
+            } else {
+                playerOneMarkerSpan.textContent = 'circle';
+                playerTwoMarkerSpan.textContent = 'close';
+            }
+        }
+    }
+
     const clearActiveGameInfo = () => {
         const playerOneMark = document.querySelector('.player-one-mark');
         const playerTwoMark = document.querySelector('.player-two-mark');
@@ -414,6 +436,7 @@ const displayController = (() => {
     return {
         toggleNewGameButton,
         toggleGameInfoDisplay,
+        displayPlayerMarker,
         displayActiveGameInfo,
         clearActiveGameInfo,
         clearDisplay
