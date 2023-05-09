@@ -1,5 +1,14 @@
+:root {
+    --retro-pink: #FF4F7E;
+    --retro-yellow: #FFE7BD;
+    --retro-darkpurple: #3C2B61;
+    --retro-mediumpurple: #7055AB;
+    --retro-purple: #925BB3;
+}
+
 body {
     font-family: 'JetBrains Mono', monospace;
+    background-color: whitesmoke;
 }
 
 main {
@@ -25,10 +34,17 @@ form {
     gap: 8px;
 }
 
+button {
+    border: solid;
+    border-width: 1px;
+    border-radius: 2px;
+}
+
 .gameboard-container {
     display: grid;
     grid-template-columns: repeat(3, 10vh);
     grid-template-rows: repeat(3, 10vh);
+    overflow: hidden;
 }
 
 .gameboard-cell {
@@ -39,8 +55,11 @@ form {
     align-self: center;
     height: 100%;
     width: 100%;
-    border-style: groove;
-    border-width: 4px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--retro-darkpurple);
+    border-collapse: collapse;
+
 }
 
 .game-info-div {
@@ -50,6 +69,12 @@ form {
 .game-inactive-div {
     display: flex;
     flex-direction: column;
+    border-style: solid;
+    border-width: 2px;
+    padding: 8px;
+    padding-bottom: 16px;
+    background-color: var(--retro-pink);
+    color: white;
 }
 
 .player-form-div {
@@ -79,6 +104,10 @@ form {
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--retro-mediumpurple);
+    color: white;
+    border-color: var(--retro-darkpurple);
+    border-width: 2px;
 }
 
 .start-div {
@@ -89,4 +118,8 @@ form {
 
 .start-button {
     width: 11vw;
+    background-color: var(--retro-darkpurple);
+    color: white;
+    font-weight: 600;
+    padding-top: 4px;
 }
