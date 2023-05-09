@@ -17,26 +17,28 @@
         
         <section class="gameboard-container"></section>
         
-        <section class="game-info">
+        <section class="game-info-div">
             <div class="game-inactive-div">
-                <div player-form-div>
-                    <form class="player-form" action="post">
-                        <label for="player-one">Name [Player One]: </label>
-                        <input type="text" name="player-one-name" id="player-one" placeholder="Sherlock" required>
-                    </form>
+                <div class="player-form-div">
+                    <div class="player-one-div">
+                        <form class="player-form" action="post">
+                            <label for="player-one">[Player One] </label>
+                            <input type="text" name="player-one-name" id="player-one" placeholder="Sherlock" required>
+                        </form>
+                    </div>
                     <div class="marker-icons">
                         <button class="marker" id="player-one-x"><span class="material-symbols-outlined">close</span></button>
                         <button class="marker" id="player-one-o"><span class="material-symbols-outlined">circle</span></button>
                     </div>
-                </div>
-                <div class="player-form-div">
-                    <form class="player-form" action="post">
-                        <label for="player-one">Name [Player Two]: </label>
-                        <input type="text" name="player-one-name" id="player-two" placeholder="Watson" required>
-                    </form>
                     <div class="marker-icons">
                         <button class="marker" id="player-two-x"><span class="material-symbols-outlined">close</span></button>
                         <button class="marker" id="player-two-o"><span class="material-symbols-outlined">circle</span></button>
+                    </div>
+                    <div class="player-two-div">
+                        <form class="player-form" action="post">
+                            <label for="player-one"> [Player Two]</label>
+                            <input type="text" name="player-one-name" id="player-two" placeholder="Watson" required>
+                        </form>
                     </div>
                 </div>
                 <div class="start-div">

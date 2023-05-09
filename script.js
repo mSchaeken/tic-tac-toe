@@ -173,7 +173,8 @@ const gameboard = (() => {
               (mark) => mark === inactiveMark || mark === null
             );
           };
-
+        
+        //Check for horizontal wins
         allRows.forEach(row => {
             if (checkRow(row) === undefined) {
                 console.log(`${activePlayer} wins!`)
@@ -181,6 +182,7 @@ const gameboard = (() => {
             }
         })
         
+        //Check for vertical wins
         for (let i = 0; i < 3; i++) {
             let verticalRow = [];
 
@@ -194,6 +196,7 @@ const gameboard = (() => {
             };
         };
 
+        //Check for diagonal wins
         let diagonalRowOne = [];
         let diagonalRowTwo = [];
         let diagonalRows = [diagonalRowOne, diagonalRowTwo];
@@ -217,6 +220,7 @@ const gameboard = (() => {
             }
         });
 
+        //Check for ties
         let rowFullCounter = 0
         allRows.forEach(row => {
             if (

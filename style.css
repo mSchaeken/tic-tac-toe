@@ -13,6 +13,18 @@ h1 {
     margin-bottom: 10vh;
 }
 
+input {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
 .gameboard-container {
     display: grid;
     grid-template-columns: repeat(3, 10vh);
@@ -29,4 +41,52 @@ h1 {
     width: 100%;
     border-style: groove;
     border-width: 4px;
+}
+
+.game-info-div {
+    margin: 64px;
+}
+
+.game-inactive-div {
+    display: flex;
+    flex-direction: column;
+}
+
+.player-form-div {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.player-one-div,
+.player-two-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.marker-icons {
+    width: 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 8px;
+}
+
+.marker {
+    margin: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.start-div {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.start-button {
+    width: 11vw;
 }
