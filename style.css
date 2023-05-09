@@ -106,6 +106,7 @@ button {
     display: flex;
     flex-direction: row;
     align-items: baseline;
+    justify-content: space-around;
 }
 
 .player-one-div,
