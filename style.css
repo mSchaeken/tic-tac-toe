@@ -115,8 +115,7 @@ button {
     align-items: center;
 }
 
-.player-one-info,
-.player-two-info {
+.player-info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;

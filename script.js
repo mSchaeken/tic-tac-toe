@@ -10,7 +10,7 @@ const playerFactory = (name, mark) => {
 
 const gameFlow = (() => {
     let gameIsActive = false;
-    const _toggleGameIsActive = () => {
+    const toggleGameIsActive = () => {
         if (gameIsActive === false) {
             gameIsActive = true;
         } else {
@@ -103,7 +103,7 @@ const gameFlow = (() => {
 
     const startGame = () => {
         if (getGameIsActive() === false) {
-            _toggleGameIsActive();
+            toggleGameIsActive();
             displayController.toggleGameInfoDisplay();
             _setPlayers();
             displayController.displayActiveGameInfo();
@@ -112,8 +112,7 @@ const gameFlow = (() => {
     }
 
     const resetGame = () => {
-        if (getGameIsActive() === true) {
-            _toggleGameIsActive();
+        if (getGameIsActive() === false) {
             displayController.toggleGameInfoDisplay();
             displayController.clearDisplay();
             displayController.clearActiveGameInfo();
@@ -126,6 +125,7 @@ const gameFlow = (() => {
         getPlayers,
         getActivePlayer,
         getInactivePlayer,
+        toggleGameIsActive,
         toggleActivePlayer,
         setMarkers,
         getGameIsActive,
@@ -134,6 +134,7 @@ const gameFlow = (() => {
     };
 })();
 
+
 const gameboard = (() => {
     const gameboardRows = {
         topRow: [null, null, null],
@@ -141,11 +142,6 @@ const gameboard = (() => {
         bottomRow: [null, null, null]
     }
 
-    //Function  for testing purposes
-    const checkGameboard = () => {
-        return gameboardRows
-    }
-    
     const resetGameboard = () => {
             gameboardRows.topRow = [null, null, null],
             gameboardRows.middleRow = [null, null, null],
@@ -174,6 +170,7 @@ const gameboard = (() => {
             if (checkRow(row) === undefined) {
                 displayController.toggleNewGameButton();
                 displayController.displayWinner(gameFlow.getActivePlayer().getName())
+                gameFlow.toggleGameIsActive();
                 return;
             }
         })
@@ -189,6 +186,7 @@ const gameboard = (() => {
             if (checkRow(verticalRow) === undefined) {
                 displayController.toggleNewGameButton();
                 displayController.displayWinner(gameFlow.getActivePlayer().getName())
+                gameFlow.toggleGameIsActive();
                 return;
             };
         };
@@ -214,6 +212,7 @@ const gameboard = (() => {
             if (checkRow(row) === undefined) {
                 displayController.toggleNewGameButton();
                 displayController.displayWinner(gameFlow.getActivePlayer().getName())
+                gameFlow.toggleGameIsActive();
                 return;
             }
         });
@@ -233,6 +232,7 @@ const gameboard = (() => {
         if (rowFullCounter === 3) {
             displayController.toggleNewGameButton();
             displayController.displayWinner(null)
+            gameFlow.toggleGameIsActive();
             return;
         }
     };
@@ -322,7 +322,6 @@ const gameboard = (() => {
     return {
         resetGameboard,
         placeMarker,
-        checkGameboard
     }
 })();
 
@@ -426,6 +425,9 @@ const displayController = (() => {
     const clearDisplay = () => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
         const playerNameFields = document.querySelectorAll('input');
+        const resultFieldOne = document.querySelector('.player-one-winner');
+        const resultFieldTwo = document.querySelector('.player-two-winner');
+        const resultFields = [resultFieldOne, resultFieldTwo]
 
         gameboardCells.forEach(gameboardCell => {
             gameboardCell.textContent = '';
@@ -434,6 +436,10 @@ const displayController = (() => {
         playerNameFields.forEach(playerNameField => {
             playerNameField.value = '';
         });
+
+        resultFields.forEach(field => {
+            field.textContent = '';
+        })
     }
 
     const _displayGameboard = () => {
