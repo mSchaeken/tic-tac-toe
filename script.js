@@ -9,7 +9,6 @@ const playerFactory = (name, mark) => {
 };
 
 const gameFlow = (() => {
-
     let gameIsActive = false;
     const _toggleGameIsActive = () => {
         if (gameIsActive === false) {
@@ -107,6 +106,7 @@ const gameFlow = (() => {
             _toggleGameIsActive();
             displayController.toggleGameInfoDisplay();
             _setPlayers();
+            displayController.displayActiveGameInfo();
         }
     }
 
@@ -115,6 +115,7 @@ const gameFlow = (() => {
             _toggleGameIsActive();
             displayController.toggleGameInfoDisplay();
             displayController.clearDisplay();
+            displayController.clearActiveGameInfo();
             _resetPlayers();
             gameboard.resetGameboard();
         }
@@ -133,7 +134,6 @@ const gameFlow = (() => {
 })();
 
 const gameboard = (() => {
-
     const gameboardRows = {
         topRow: [null, null, null],
         middleRow: [null, null, null],
@@ -152,12 +152,6 @@ const gameboard = (() => {
     }
 
     const _checkForGameOver = () => {
-
-        //Pseudo
-        //If topRow[0] && middleRow[1] && bottomRow[2] are equal non-NULL values -> game over
-        //If bottomRow[0] && middleRow[1] && topRow[2] are equal non-NULL values -> game over
-        //If all rows have no NULL values anymore -> game over (tie)
-
         const allRows = [
             gameboardRows.bottomRow,
             gameboardRows.middleRow,
@@ -318,7 +312,6 @@ const gameboard = (() => {
 })();
 
 const displayController = (() => {
-
     const toggleGameInfoDisplay = () => {
         const gameActiveDiv = document.querySelector('.game-active-div');
         const gameInactiveDiv = document.querySelector('.game-inactive-div');
@@ -330,6 +323,42 @@ const displayController = (() => {
             gameActiveDiv.style.display = 'none';
             gameInactiveDiv.style.display = 'block';
         }
+    }
+
+    const clearActiveGameInfo = () => {
+        const playerOneMark = document.querySelector('.player-one-mark');
+        const playerTwoMark = document.querySelector('.player-two-mark');
+
+        if (playerOneMark.firstElementChild != null) {
+            playerOneMark.removeChild(playerOneMark.firstElementChild);
+            playerTwoMark.removeChild(playerTwoMark.firstElementChild);
+        }
+    }
+
+    const displayActiveGameInfo = () => {
+        const playerOneName = document.querySelector('.player-one-name');
+        const playerTwoName = document.querySelector('.player-two-name');
+        const playerOneMark = document.querySelector('.player-one-mark');
+        const playerTwoMark = document.querySelector('.player-two-mark');
+
+        const markSpanOne = document.createElement('span');
+        const markSpanTwo = document.createElement('span');
+
+        markSpanOne.className = 'material-symbols-outlined';
+        markSpanTwo.className = 'material-symbols-outlined';          
+        playerOneName.textContent = `${gameFlow.getPlayers()[0]}`;
+        playerTwoName.textContent = `${gameFlow.getPlayers()[1]}`;
+        
+        if (gameFlow.getActivePlayer().getMark() === 'X') {
+            markSpanOne.textContent = 'close';
+            markSpanTwo.textContent = 'circle';
+        } else {
+            markSpanOne.textContent = 'circle';
+            markSpanTwo.textContent = 'close';
+        }
+
+        playerOneMark.append(markSpanOne);
+        playerTwoMark.append(markSpanTwo);  
     }
 
     const clearDisplay = () => {
@@ -366,12 +395,13 @@ const displayController = (() => {
 
     return {
         toggleGameInfoDisplay,
+        displayActiveGameInfo,
+        clearActiveGameInfo,
         clearDisplay
     }
 })();
 
 const addListeners = (() => {
-
     const _addStartButtonListener = () => {
         const button = document.querySelector('.start-button');
         button.addEventListener('click', gameFlow.startGame);

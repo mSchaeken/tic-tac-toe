@@ -1,9 +1,9 @@
 :root {
-    --retro-pink: #FF4F7E;
-    --retro-yellow: #FFE7BD;
-    --retro-darkpurple: #3C2B61;
-    --retro-mediumpurple: #7055AB;
-    --retro-purple: #925BB3;
+--federal-blue: #03045eff;
+--honolulu-blue: #0077b6ff;
+--pacific-cyan: #00b4d8ff;
+--non-photo-blue: #90e0efff;
+--light-cyan: #caf0f8ff;
 }
 
 body {
@@ -20,11 +20,13 @@ main {
 h1 {
     margin-top: 10vh;
     margin-bottom: 10vh;
+    color: var(--federal-blue);
 }
 
 input {
     margin-left: 16px;
     margin-right: 16px;
+    text-align: center;
 }
 
 form {
@@ -57,7 +59,7 @@ button {
     width: 100%;
     border-style: solid;
     border-width: 2px;
-    border-color: var(--retro-darkpurple);
+    border-color: var(--honolulu-blue);
     border-collapse: collapse;
 
 }
@@ -73,8 +75,13 @@ button {
     border-width: 2px;
     padding: 8px;
     padding-bottom: 16px;
-    background-color: var(--retro-pink);
+    background-color: var(--pacific-cyan);
     color: white;
+}
+
+.game-active-div {
+    display: flex;
+    flex-direction: row;
 }
 
 .player-form-div {
@@ -104,9 +111,8 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--retro-mediumpurple);
+    background-color: var(--honolulu-blue);
     color: white;
-    border-color: var(--retro-darkpurple);
     border-width: 2px;
 }
 
@@ -118,8 +124,8 @@ button {
 
 .start-button {
     width: 11vw;
-    background-color: var(--retro-darkpurple);
-    color: white;
+    background-color: white;
+    color: black;
     font-weight: 600;
     padding-top: 4px;
 }
