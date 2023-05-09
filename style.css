@@ -88,6 +88,11 @@ button {
     width: 50vw;
 }
 
+.game-active-div:active {
+    opacity: 1;
+    transition: 0.5s;
+}
+
 .player-form-div {
     display: flex;
     flex-direction: row;
@@ -113,7 +118,7 @@ button {
 .player-two-info {
     display: flex;
     flex-direction: column;
-    justify-content: baseline;
+    justify-content: space-between;
     align-items: center;
     gap: 8px;
     margin: 16px;
@@ -147,8 +152,9 @@ button {
 }
 
 div.reset-div {
+    display: flex;
     height: 5vh;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     margin: 16px;
 }

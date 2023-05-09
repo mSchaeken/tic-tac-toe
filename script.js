@@ -107,6 +107,7 @@ const gameFlow = (() => {
             displayController.toggleGameInfoDisplay();
             _setPlayers();
             displayController.displayActiveGameInfo();
+            displayController.toggleNewGameButton();
         }
     }
 
@@ -172,6 +173,7 @@ const gameboard = (() => {
         allRows.forEach(row => {
             if (checkRow(row) === undefined) {
                 console.log(`${activePlayer} wins!`)
+                displayController.toggleNewGameButton();
                 return;
             }
         })
@@ -186,6 +188,7 @@ const gameboard = (() => {
 
             if (checkRow(verticalRow) === undefined) {
                 console.log(`${activePlayer} wins!`);
+                displayController.toggleNewGameButton();
                 return;
             };
         };
@@ -210,6 +213,7 @@ const gameboard = (() => {
         diagonalRows.forEach(row => {
             if (checkRow(row) === undefined) {
                 console.log(`${activePlayer} wins!`);
+                displayController.toggleNewGameButton();
                 return;
             }
         });
@@ -228,6 +232,7 @@ const gameboard = (() => {
 
         if (rowFullCounter === 3) {
             console.log('Its a tie!');
+            displayController.toggleNewGameButton();
             return;
         }
     };
@@ -312,6 +317,19 @@ const gameboard = (() => {
 })();
 
 const displayController = (() => {
+    const toggleNewGameButton = () => {
+        const newGameButton = document.querySelector('.reset-div');
+        const versusDiv = document.querySelector('.versus-div');
+
+        if (newGameButton.style.display === 'none' ) {
+            newGameButton.style.display = 'flex';
+            versusDiv.style.display = 'none';
+        } else {
+            newGameButton.style.display = 'none';
+            versusDiv.style.display = 'flex';
+        }
+    }
+
     const toggleGameInfoDisplay = () => {
         const gameActiveDiv = document.querySelector('.game-active-div');
         const gameInactiveDiv = document.querySelector('.game-inactive-div');
@@ -394,6 +412,7 @@ const displayController = (() => {
     _displayGameboard();
 
     return {
+        toggleNewGameButton,
         toggleGameInfoDisplay,
         displayActiveGameInfo,
         clearActiveGameInfo,
