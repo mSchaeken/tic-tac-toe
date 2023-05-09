@@ -154,8 +154,6 @@ const gameboard = (() => {
     const _checkForGameOver = () => {
 
         //Pseudo
-        //If one of three rows have equal non-NULL values-> game over
-        //If each similar index in three rows have equal non-NULL values-> game over
         //If topRow[0] && middleRow[1] && bottomRow[2] are equal non-NULL values -> game over
         //If bottomRow[0] && middleRow[1] && topRow[2] are equal non-NULL values -> game over
         //If all rows have no NULL values anymore -> game over (tie)
@@ -193,8 +191,31 @@ const gameboard = (() => {
             if (checkRow(verticalRow) === undefined) {
                 console.log(`${activePlayer} wins!`);
                 return;
+            };
+        };
+
+        let diagonalRowOne = [];
+        let diagonalRowTwo = [];
+        let diagonalRows = [diagonalRowOne, diagonalRowTwo];
+
+        diagonalRowOne.push(
+            allRows[0][0],
+            allRows[1][1],
+            allRows[2][2]
+        );
+
+        diagonalRowTwo.push(
+            allRows[0][2],
+            allRows[1][1],
+            allRows[2][0]
+        );
+
+        diagonalRows.forEach(row => {
+            if (checkRow(row) === undefined) {
+                console.log(`${activePlayer} wins!`);
+                return;
             }
-        }
+        });
     };
 
     const _checkIfValidMove = function (index) {
