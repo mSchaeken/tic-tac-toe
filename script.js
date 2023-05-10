@@ -142,6 +142,16 @@ const gameboard = (() => {
         bottomRow: [null, null, null]
     }
 
+    const getGameboardRows = () => {
+        const allRows = [
+            gameboardRows.bottomRow,
+            gameboardRows.middleRow,
+            gameboardRows.topRow
+        ];
+
+        return allRows
+    }
+
     const resetGameboard = () => {
             gameboardRows.topRow = [null, null, null],
             gameboardRows.middleRow = [null, null, null],
@@ -237,7 +247,7 @@ const gameboard = (() => {
         }
     };
 
-    const _checkIfValidMove = function (index) {
+    const checkIfValidMove = function (index) {
         cellIndex = parseInt(index);
 
         switch (true) {
@@ -270,7 +280,7 @@ const gameboard = (() => {
         const that = element;
         const cellIndex = parseInt(that.id);
  
-        if (_checkIfValidMove(that.id) === true) {
+        if (checkIfValidMove(that.id) === true) {
             /*
             Subtraction in indices is to account for the arrays being split up in 
             three separate arrays and the HTML elements being indexed from 0-8
@@ -289,7 +299,7 @@ const gameboard = (() => {
         }
     }
 
-    const placeMarker = function () {
+    const placePlayerMarker = function () {
         const that = this;
         let playerOneMark = null;
         let playerTwoMark = null;
@@ -302,7 +312,7 @@ const gameboard = (() => {
             playerTwoMark = 'close';
         }
 
-        if (_checkIfValidMove(that.id) === true &&
+        if (checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
 
             if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
@@ -319,9 +329,16 @@ const gameboard = (() => {
         }
     }
 
+    const placeComputerMarker = function (indices) {
+        console.log(indices)
+    }
+
     return {
+        getGameboardRows,
+        checkIfValidMove,
         resetGameboard,
-        placeMarker,
+        placePlayerMarker,
+        placeComputerMarker
     }
 })();
 
@@ -473,6 +490,25 @@ const displayController = (() => {
     }
 })();
 
+const aiOpponent = (() => {
+    const getRandomInt = function (max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    const getRandomValidMove = (row, rowindex) => {
+        if (gameboard.getGameboardRows()[row][rowindex] === null) {
+            const validIndices = [row, rowindex]
+            return validIndices;
+        } else {
+            return false;
+        }
+    }
+
+    return {
+       getRandomValidMove
+    }
+})();
+
 const addListeners = (() => {
     const _addStartButtonListener = () => {
         const button = document.querySelector('.start-button');
@@ -495,7 +531,7 @@ const addListeners = (() => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
 
         gameboardCells.forEach(element => {
-            element.addEventListener('click', gameboard.placeMarker);
+            element.addEventListener('click', gameboard.placePlayerMarker);
         });
     } 
 
