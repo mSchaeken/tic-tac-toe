@@ -330,8 +330,15 @@ const gameboard = (() => {
     }
 
     const placeComputerMarker = function (indices) {
-        console.log(indices)
-    }
+        if (
+          aiOpponent.getRandomValidMove(
+            aiOpponent.getRandomInt(3),
+            aiOpponent.getRandomInt(3)
+            ) !== false &&
+          gameFlow.getGameIsActive() === true
+        )
+          this.textContent = computerMark
+      };
 
     return {
         getGameboardRows,
@@ -505,7 +512,8 @@ const aiOpponent = (() => {
     }
 
     return {
-       getRandomValidMove
+        getRandomInt,
+        getRandomValidMove
     }
 })();
 
