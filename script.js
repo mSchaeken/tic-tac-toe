@@ -508,11 +508,21 @@ const aiOpponent = (() => {
             else {
                 aiActive = false
             }
-        }  
+        }
+        console.log(getAiOpponent())  
     }
 
     const getAiOpponent = () => {
         return aiActive
+    }
+
+    let aiDifficulty = null
+    const setAiOpponentDifficulty = function () {
+        aiDifficulty = this.value
+    }
+
+    const getAiOpponentDifficulty = () => {
+        return aiDifficulty
     }
 
     const getRandomInt = function (max) {
@@ -531,6 +541,8 @@ const aiOpponent = (() => {
     return {
         setAiOpponent,
         getAiOpponent,
+        setAiOpponentDifficulty,
+        getAiOpponentDifficulty,
         getRandomInt,
         getRandomValidMove
     }
@@ -556,14 +568,25 @@ const addListeners = (() => {
 
     const _addGameboardListeners = (row1, row2, row3) => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
-
         gameboardCells.forEach(element => {
             element.addEventListener('click', gameboard.placePlayerMarker);
         });
-    } 
+    }
+
+    const _addAiButtonListener = () => {
+        const button = document.querySelector('#ai-versus-button')
+        button.addEventListener('click', aiOpponent.setAiOpponent)
+    }
+
+    const _difficultyDropdownListener = () => {
+        const dropdown = document.querySelector('#computer-difficulty-dropdown')
+        dropdown.addEventListener('change', aiOpponent.setAiOpponentDifficulty)
+    }
 
     _addStartButtonListener();
     _addResetButtonListener();
     _addMarkerButtonListeners();
     _addGameboardListeners();
+    _addAiButtonListener();
+    _difficultyDropdownListener();
 })();
