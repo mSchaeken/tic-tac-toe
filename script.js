@@ -498,6 +498,23 @@ const displayController = (() => {
 })();
 
 const aiOpponent = (() => {
+
+    let aiActive = null
+    const setAiOpponent = () => {
+        if (gameFlow.getGameIsActive() === false) {
+            if (aiActive === null || aiActive === false) {
+                aiActive = true
+            }
+            else {
+                aiActive = false
+            }
+        }  
+    }
+
+    const getAiOpponent = () => {
+        return aiActive
+    }
+
     const getRandomInt = function (max) {
         return Math.floor(Math.random() * max);
     }
@@ -512,6 +529,8 @@ const aiOpponent = (() => {
     }
 
     return {
+        setAiOpponent,
+        getAiOpponent,
         getRandomInt,
         getRandomValidMove
     }
