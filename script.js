@@ -121,6 +121,12 @@ const gameFlow = (() => {
         }
     }
 
+    let opponent = 'player'
+    const setOpponent = function () {
+      console.log('test')
+      console.log(this)
+    }
+
     return {
         getPlayers,
         getActivePlayer,
@@ -130,7 +136,8 @@ const gameFlow = (() => {
         setMarkers,
         getGameIsActive,
         startGame,
-        resetGame
+        resetGame,
+        setOpponent
     };
 })();
 
@@ -345,7 +352,7 @@ const gameboard = (() => {
         checkIfValidMove,
         resetGameboard,
         placePlayerMarker,
-        placeComputerMarker
+        placeComputerMarker,
     }
 })();
 
@@ -466,6 +473,17 @@ const displayController = (() => {
         })
     }
 
+    const displayPlayerTwoComputerOrPlayer = () => {
+        const aiVersusButton = document.querySelector('#ai-versus-button')
+        const aiDifficultyDropdown = document.querySelector('#computer-difficulty-dropdown')
+
+        if (aiOpponent.getAiOpponent() === null || aiOpponent.getAiOpponent() === false) {
+            aiVersusButton.textContent = 'Play versus AI'
+        } else {
+            aiVersusButton.textContent = 'Two-player mode'
+        }
+    }
+
     const _displayGameboard = () => {
         const gameboard = document.querySelector('.gameboard-container');
         
@@ -491,6 +509,7 @@ const displayController = (() => {
         toggleGameInfoDisplay,
         displayPlayerMarker,
         displayActiveGameInfo,
+        displayPlayerTwoComputerOrPlayer,
         clearActiveGameInfo,
         displayWinner,
         clearDisplay
@@ -498,23 +517,6 @@ const displayController = (() => {
 })();
 
 const aiOpponent = (() => {
-
-    let aiActive = null
-    const setAiOpponent = () => {
-        if (gameFlow.getGameIsActive() === false) {
-            if (aiActive === null || aiActive === false) {
-                aiActive = true
-            }
-            else {
-                aiActive = false
-            }
-        }
-        console.log(getAiOpponent())  
-    }
-
-    const getAiOpponent = () => {
-        return aiActive
-    }
 
     let aiDifficulty = null
     const setAiOpponentDifficulty = function () {
@@ -539,8 +541,6 @@ const aiOpponent = (() => {
     }
 
     return {
-        setAiOpponent,
-        getAiOpponent,
         setAiOpponentDifficulty,
         getAiOpponentDifficulty,
         getRandomInt,
@@ -573,9 +573,11 @@ const addListeners = (() => {
         });
     }
 
-    const _addAiButtonListener = () => {
-        const button = document.querySelector('#ai-versus-button')
-        button.addEventListener('click', aiOpponent.setAiOpponent)
+    const _opponentButtonListeners = () => {
+        const buttons = document.querySelectorAll('.opponent-button')
+        buttons.forEach(element => {
+            element.addEventListener('click', gameFlow.setOpponent)
+        })
     }
 
     const _difficultyDropdownListener = () => {
@@ -587,6 +589,6 @@ const addListeners = (() => {
     _addResetButtonListener();
     _addMarkerButtonListeners();
     _addGameboardListeners();
-    _addAiButtonListener();
+    _opponentButtonListeners();
     _difficultyDropdownListener();
 })();

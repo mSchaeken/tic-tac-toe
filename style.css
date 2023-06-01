@@ -220,3 +220,26 @@ div.reset-div {
     border-color: var(--federal-blue);
     border-width: 4px;
 }
+
+.opponent-button {
+    background-color: white;
+}
+
+.opponent-button:hover {
+    transition: 0.2s;
+    border: solid;
+    border-width: 2px;
+}
+
+.active-opponent-button {
+    background-color: var(--non-photo-blue);
+    color: black;
+    border-style: solid;
+    border-width: 2px;
+
+}
+
+.inactive-opponent-button {
+    background-color: white;
+    color: black;
+}
