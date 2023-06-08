@@ -121,10 +121,18 @@ const gameFlow = (() => {
         }
     }
 
+    //
     let opponent = 'player'
     const setOpponent = function () {
-      console.log('test')
-      console.log(this)
+      if (this.id === 'player-versus-button') {
+        opponent = 'player'
+      } else {
+        opponent = 'computer'
+      }
+    }
+
+    const getOpponent = function () {
+        return opponent
     }
 
     return {
@@ -137,7 +145,8 @@ const gameFlow = (() => {
         getGameIsActive,
         startGame,
         resetGame,
-        setOpponent
+        setOpponent,
+        getOpponent
     };
 })();
 
