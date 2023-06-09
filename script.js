@@ -77,16 +77,42 @@ const gameFlow = (() => {
     let playerOne = null;
     let playerTwo = null;
     const _setPlayers = () => {
-        let playerOneForm = document.querySelector('#player-one').value;
-        let playerTwoForm = document.querySelector('#player-two').value;
+        if (opponent === 'player') {
+            let playerOneName = document.querySelector('#player-one').value;
+            let playerTwoName = document.querySelector('#player-two').value;
 
-        if (playerOneForm === '' || playerTwoForm === '') {
-            playerOneForm = 'Sherlock';
-            playerTwoForm = 'Watson';
-        } 
+            if (playerOneName === '' || playerTwoName === '') {
+                playerOneName = 'Sherlock';
+                playerTwoName = 'Watson';
+            } 
+            
+            gameFlow.playerOne = playerFactory(playerOneName, playerOneMarker);
+            gameFlow.playerTwo = playerFactory(playerTwoName, playerTwoMarker);
+        
+        } else {
+            let playerOneName = document.querySelector('#player-one').value;
+            let playerTwoName = null
 
-        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker);
-        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker);
+            switch (aiOpponent.getAiOpponentDifficulty()) {
+                case 'Easy':
+                    playerTwoName = 'Fred Flintstone'
+                    break
+                case 'Medium':
+                    playerTwoName = 'Dr. John Dollar'
+                    break
+                case 'Impossible':
+                    playerTwoName = 'Moriarty'
+                    break
+            }
+
+            if (playerOneName === '') {
+                playerOneName === 'Sherlock'
+            }
+
+            gameFlow.playerOne = playerFactory(playerOneName, 'X')
+            gameFlow.playerTwo = playerFactory(playerTwoName, 'O')
+        }
+        
 
         _setActivePlayer();
         _setInactivePlayer();
@@ -128,6 +154,7 @@ const gameFlow = (() => {
         opponent = 'player'
       } else {
         opponent = 'computer'
+        aiOpponent.setAiOpponentDifficulty()
       }
     }
 
@@ -529,7 +556,8 @@ const aiOpponent = (() => {
 
     let aiDifficulty = null
     const setAiOpponentDifficulty = function () {
-        aiDifficulty = this.value
+        const aiDifficultyDropdown = document.querySelector('#computer-difficulty-dropdown')
+        aiDifficulty = aiDifficultyDropdown.value
     }
 
     const getAiOpponentDifficulty = () => {
