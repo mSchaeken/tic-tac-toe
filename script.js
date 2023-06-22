@@ -91,19 +91,7 @@ const gameFlow = (() => {
         
         } else {
             let playerOneName = document.querySelector('#player-one').value;
-            let playerTwoName = null
-
-            switch (aiOpponent.getAiOpponentDifficulty()) {
-                case 'Easy':
-                    playerTwoName = 'Fred Flintstone'
-                    break
-                case 'Medium':
-                    playerTwoName = 'Dr. John Dollar'
-                    break
-                case 'Impossible':
-                    playerTwoName = 'Moriarty'
-                    break
-            }
+            let playerTwoName = computerOpponentName
 
             if (playerOneName === '') {
                 playerOneName === 'Sherlock'
@@ -152,10 +140,34 @@ const gameFlow = (() => {
     const setOpponent = function () {
       if (this.id === 'player-versus-button') {
         opponent = 'player'
+        displayController.displayPlayerTwoComputerOrPlayer('player')
       } else {
         opponent = 'computer'
         aiOpponent.setAiOpponentDifficulty()
+        gameFlow.setComputerOpponentName()
+        displayController.displayPlayerTwoComputerOrPlayer('computer')
       }
+    }
+
+    let computerOpponentName = null
+    const setComputerOpponentName = () => {
+        switch (aiOpponent.getAiOpponentDifficulty()) {
+            case 'easy':
+                computerOpponentName = 'Fred Flintstone'
+                break
+            case 'medium':
+                computerOpponentName = 'Dr. John Dollar'
+                break
+            case 'impossible':
+                computerOpponentName = 'Moriarty'
+                break
+        }
+        
+        displayController.displayComputerOpponentName();
+    }
+
+    const getComputerOpponentName = () => {
+        return computerOpponentName
     }
 
     const getOpponent = function () {
@@ -173,6 +185,8 @@ const gameFlow = (() => {
         startGame,
         resetGame,
         setOpponent,
+        setComputerOpponentName,
+        getComputerOpponentName,
         getOpponent
     };
 })();
@@ -409,6 +423,7 @@ const displayController = (() => {
     const toggleGameInfoDisplay = () => {
         const gameActiveDiv = document.querySelector('.game-active-div');
         const gameInactiveDiv = document.querySelector('.game-inactive-div');
+        const computerOpponentDiv = document.querySelector('.computer-div')
 
         if (gameFlow.getGameIsActive() === true) {
             gameActiveDiv.style.display = 'flex';
@@ -416,7 +431,9 @@ const displayController = (() => {
         } else {
             gameActiveDiv.style.display = 'none';
             gameInactiveDiv.style.display = 'flex';
+            computerOpponentDiv.style.display = 'none';
         }
+
     }
 
     const displayPlayerMarker = (mark) => {
@@ -509,15 +526,22 @@ const displayController = (() => {
         })
     }
 
-    const displayPlayerTwoComputerOrPlayer = () => {
-        const aiVersusButton = document.querySelector('#ai-versus-button')
-        const aiDifficultyDropdown = document.querySelector('#computer-difficulty-dropdown')
+    const displayPlayerTwoComputerOrPlayer = (opponent) => {
+        const playerOpponentDiv = document.querySelector('.player-two-div')
+        const computerOpponentDiv = document.querySelector('.computer-div')
 
-        if (aiOpponent.getAiOpponent() === null || aiOpponent.getAiOpponent() === false) {
-            aiVersusButton.textContent = 'Play versus AI'
+        if (opponent === 'player') {
+            playerOpponentDiv.style.display = 'flex'
+            computerOpponentDiv.style.display = 'none'
         } else {
-            aiVersusButton.textContent = 'Two-player mode'
+            playerOpponentDiv.style.display = 'none'
+            computerOpponentDiv.style.display = 'flex'          
         }
+    }
+
+    const displayComputerOpponentName = () => {
+        const computerOpponentNameDiv = document.querySelector('.computer-opponent-name-div')
+        computerOpponentNameDiv.textContent = `${gameFlow.getComputerOpponentName()}`
     }
 
     const _displayGameboard = () => {
@@ -546,6 +570,7 @@ const displayController = (() => {
         displayPlayerMarker,
         displayActiveGameInfo,
         displayPlayerTwoComputerOrPlayer,
+        displayComputerOpponentName,
         clearActiveGameInfo,
         displayWinner,
         clearDisplay
@@ -554,7 +579,7 @@ const displayController = (() => {
 
 const aiOpponent = (() => {
 
-    let aiDifficulty = null
+    let aiDifficulty = 'easy'
     const setAiOpponentDifficulty = function () {
         const aiDifficultyDropdown = document.querySelector('#computer-difficulty-dropdown')
         aiDifficulty = aiDifficultyDropdown.value
@@ -583,6 +608,7 @@ const aiOpponent = (() => {
         getRandomInt,
         getRandomValidMove
     }
+
 })();
 
 const addListeners = (() => {
@@ -620,6 +646,7 @@ const addListeners = (() => {
     const _difficultyDropdownListener = () => {
         const dropdown = document.querySelector('#computer-difficulty-dropdown')
         dropdown.addEventListener('change', aiOpponent.setAiOpponentDifficulty)
+        dropdown.addEventListener('change', gameFlow.setComputerOpponentName)
     }
 
     _addStartButtonListener();
