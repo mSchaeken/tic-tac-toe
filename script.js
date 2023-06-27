@@ -45,8 +45,9 @@ const gameFlow = (() => {
             activePlayer = gameFlow.playerTwo;
             inactivePlayer = gameFlow.playerOne;
 
-            if (gameFlow.getOpponent === 'computer') {
-                placeComputerMarker()
+            if (gameFlow.getOpponent() === 'computer') {
+                setTimeout(gameboard.placeComputerMarker(), 3000)
+                toggleActivePlayer()
             }
 
         } else {
@@ -378,7 +379,7 @@ const gameboard = (() => {
         if (checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
 
-            if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
+            if (gameFlow.getActivePlayer() === gameFlow.playerOne.getName()) {
                 this.textContent = playerOneMark;
                 _updateGameboardRows(that);
                 _checkForGameOver();
@@ -393,16 +394,38 @@ const gameboard = (() => {
     }
 
     const placeComputerMarker = function (indices) {
-        if (
-          aiOpponent.getRandomValidMove(
-            aiOpponent.getRandomInt(3),
-            aiOpponent.getRandomInt(3)
-            ) !== false &&
+        const gameboardCells = document.querySelectorAll('.gameboard-cell')
+        
+        let playerOneMark = null;
+        let playerTwoMark = null;
+
+        if (gameFlow.playerOne.getMark() === 'X') {
+            playerOneMark = 'close';
+            playerTwoMark = 'circle';
+        } else {
+            playerOneMark = 'circle';
+            playerTwoMark = 'close';
+        }
+        
+        let move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(3), aiOpponent.getRandomInt(3))
+        if (move !== false &&
           gameFlow.getGameIsActive() === true
         ) {
-            //element = computerMark
-        } else {
-            placeComputerMarker 
+            console.log(move)
+            switch (move[0]) {
+                case 0:
+                    console.log(gameboardCells[move[1]])
+                    gameboardCells[move[1]].textContent = playerTwoMark
+                    break
+                case 1:
+                    console.log(gameboardCells[move[1] + 3])
+                    gameboardCells[move[1] + 3].textContent = playerTwoMark
+                    break
+                case 2:
+                    console.log(gameboardCells[move[1] + 6])
+                    gameboardCells[move[1] + 6].textContent = playerTwoMark
+                    break
+            }
         }
       };
 
