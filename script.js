@@ -44,6 +44,11 @@ const gameFlow = (() => {
         if (activePlayer === gameFlow.playerOne) {
             activePlayer = gameFlow.playerTwo;
             inactivePlayer = gameFlow.playerOne;
+
+            if (gameFlow.getOpponent === 'computer') {
+                placeComputerMarker()
+            }
+
         } else {
             activePlayer = gameFlow.playerOne;
             inactivePlayer = gameFlow.playerTwo;
@@ -138,15 +143,19 @@ const gameFlow = (() => {
     //
     let opponent = 'player'
     const setOpponent = function () {
-      if (this.id === 'player-versus-button') {
-        opponent = 'player'
-        displayController.displayPlayerTwoComputerOrPlayer('player')
-      } else {
-        opponent = 'computer'
-        aiOpponent.setAiOpponentDifficulty()
-        gameFlow.setComputerOpponentName()
-        displayController.displayPlayerTwoComputerOrPlayer('computer')
-      }
+        if (this.id === 'player-versus-button') {
+            opponent = 'player'
+            displayController.displayPlayerTwoComputerOrPlayer('player')
+        } else {
+            opponent = 'computer'
+            aiOpponent.setAiOpponentDifficulty()
+            gameFlow.setComputerOpponentName()
+            displayController.displayPlayerTwoComputerOrPlayer('computer')
+        }
+    }
+    
+    const getOpponent = function () {
+        return opponent
     }
 
     let computerOpponentName = null
@@ -170,9 +179,6 @@ const gameFlow = (() => {
         return computerOpponentName
     }
 
-    const getOpponent = function () {
-        return opponent
-    }
 
     return {
         getPlayers,
@@ -184,9 +190,9 @@ const gameFlow = (() => {
         getGameIsActive,
         startGame,
         resetGame,
-        setOpponent,
         setComputerOpponentName,
         getComputerOpponentName,
+        setOpponent,
         getOpponent
     };
 })();
@@ -393,8 +399,11 @@ const gameboard = (() => {
             aiOpponent.getRandomInt(3)
             ) !== false &&
           gameFlow.getGameIsActive() === true
-        )
-          this.textContent = computerMark
+        ) {
+            //element = computerMark
+        } else {
+            placeComputerMarker 
+        }
       };
 
     return {
@@ -424,14 +433,17 @@ const displayController = (() => {
         const gameActiveDiv = document.querySelector('.game-active-div');
         const gameInactiveDiv = document.querySelector('.game-inactive-div');
         const computerOpponentDiv = document.querySelector('.computer-div')
+        const opponentSelectionDiv = document.querySelector('.opponent-selection-div')
 
         if (gameFlow.getGameIsActive() === true) {
             gameActiveDiv.style.display = 'flex';
             gameInactiveDiv.style.display = 'none';
+            opponentSelectionDiv.style.display = 'none'
         } else {
             gameActiveDiv.style.display = 'none';
             gameInactiveDiv.style.display = 'flex';
-            computerOpponentDiv.style.display = 'none';
+            opponentSelectionDiv.style.display = 'flex'
+            computerOpponentDiv.style.display = 'flex';
         }
 
     }
