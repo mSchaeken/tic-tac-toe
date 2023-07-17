@@ -1,10 +1,12 @@
-const playerFactory = (name, mark) => {
+const playerFactory = (name, mark, playerType) => {
     const getName = () => name;
     const getMark = () => mark;
+    const getPlayerType = () => playerType;
 
     return {
         getName, 
-        getMark, 
+        getMark,
+        getPlayerType 
     };
 };
 
@@ -92,8 +94,8 @@ const gameFlow = (() => {
                 playerTwoName = 'Watson';
             } 
             
-            gameFlow.playerOne = playerFactory(playerOneName, playerOneMarker);
-            gameFlow.playerTwo = playerFactory(playerTwoName, playerTwoMarker);
+            gameFlow.playerOne = playerFactory(playerOneName, playerOneMarker, 'player');
+            gameFlow.playerTwo = playerFactory(playerTwoName, playerTwoMarker, 'player');
         
         } else {
             let playerOneName = document.querySelector('#player-one').value;
@@ -103,8 +105,8 @@ const gameFlow = (() => {
                 playerOneName === 'Sherlock'
             }
 
-            gameFlow.playerOne = playerFactory(playerOneName, 'X')
-            gameFlow.playerTwo = playerFactory(playerTwoName, 'O')
+            gameFlow.playerOne = playerFactory(playerOneName, 'X', 'player')
+            gameFlow.playerTwo = playerFactory(playerTwoName, 'O', 'computer')
         }
         
 
@@ -223,11 +225,7 @@ const gameboard = (() => {
     }
 
     const _checkForGameOver = () => {
-        const allRows = [
-            gameboardRows.bottomRow,
-            gameboardRows.middleRow,
-            gameboardRows.topRow
-        ];
+        const allRows = getGameboardRows()
 
         const activeMark = gameFlow.getActivePlayer().getMark();
         const inactiveMark = gameFlow.getInactivePlayer().getMark();
@@ -344,7 +342,7 @@ const gameboard = (() => {
         const that = element;
         const cellIndex = parseInt(that.id);
  
-        if (checkIfValidMove(that.id) === true) {
+        if (checkIfValidMove(that.id) === true && gameFlow.getActivePlayer().getPlayerType() === 'player' ) {
             /*
             Subtraction in indices is to account for the arrays being split up in 
             three separate arrays and the HTML elements being indexed from 0-8
@@ -361,31 +359,46 @@ const gameboard = (() => {
                     break;
             }
         }
+
+        if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
+            //if move[0] = 0 bottomrow
+            //if move[0] = 1 middleRow
+            //if move[0] = 2 toprow
+            switch (element[0]) {
+                case (0):
+                    gameboardRows.bottomRow[element[1]] = gameFlow.getActivePlayer().getMark()
+                    break
+                case (1):
+                    gameboardRows.middleRow[element[1]] = gameFlow.getActivePlayer().getMark()
+                    break
+                case (2):
+                    gameboardRows.topRow[element[1]] = gameFlow.getActivePlayer().getMark()
+                    break
+            }
+        }
     }
 
     const placePlayerMarker = function () {
         const that = this;
-        let playerOneMark = null;
-        let playerTwoMark = null;
 
         if (gameFlow.playerOne.getMark() === 'X') {
-            playerOneMark = 'close';
-            playerTwoMark = 'circle';
+            playerOneMarker = 'close';
+            playerTwoMarker = 'circle';
         } else {
-            playerOneMark = 'circle';
-            playerTwoMark = 'close';
+            playerOneMarker = 'circle';
+            playerTwoMarker = 'close';
         }
 
         if (checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
 
-            if (gameFlow.getActivePlayer() === gameFlow.playerOne.getName()) {
-                this.textContent = playerOneMark;
+            if (gameFlow.getActivePlayer().getName() === gameFlow.playerOne.getName()) {
+                this.textContent = playerOneMarker;
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
             } else {
-                this.textContent = playerTwoMark;
+                this.textContent = playerTwoMarker;
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
@@ -426,10 +439,12 @@ const gameboard = (() => {
                     gameboardCells[move[1] + 6].textContent = playerTwoMark
                     break
             }
+            _updateGameboardRows(move)
         }
       };
 
     return {
+        gameboardRows,
         getGameboardRows,
         checkIfValidMove,
         resetGameboard,
