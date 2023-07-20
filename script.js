@@ -361,9 +361,6 @@ const gameboard = (() => {
         }
 
         if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
-            //if move[0] = 0 bottomrow
-            //if move[0] = 1 middleRow
-            //if move[0] = 2 toprow
             switch (element[0]) {
                 case (0):
                     gameboardRows.bottomRow[element[1]] = gameFlow.getActivePlayer().getMark()
@@ -427,8 +424,8 @@ const gameboard = (() => {
             console.log(move)
             switch (move[0]) {
                 case 0:
-                    console.log(gameboardCells[move[1]])
-                    gameboardCells[move[1]].textContent = playerTwoMark
+                    console.log(gameboardCells[move[1] + 0])
+                    gameboardCells[move[1] + 0].textContent = playerTwoMark
                     break
                 case 1:
                     console.log(gameboardCells[move[1] + 3])
