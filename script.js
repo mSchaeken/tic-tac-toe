@@ -202,26 +202,22 @@ const gameFlow = (() => {
 
 
 const gameboard = (() => {
-    const gameboardRows = {
-        topRow: [null, null, null],
-        middleRow: [null, null, null],
-        bottomRow: [null, null, null]
-    }
+    let gameboardState = [
+        null, null, null,
+        null, null, null,
+        null, null, null
+    ]
 
-    const getGameboardRows = () => {
-        const allRows = [
-            gameboardRows.bottomRow,
-            gameboardRows.middleRow,
-            gameboardRows.topRow
-        ];
-
-        return allRows
+    const getGameboardState = () => {
+        return gameboardState
     }
 
     const resetGameboard = () => {
-            gameboardRows.topRow = [null, null, null],
-            gameboardRows.middleRow = [null, null, null],
-            gameboardRows.bottomRow = [null, null, null]
+        gameboardState = [
+            null, null, null,
+            null, null, null,
+            null, null, null
+        ]
     }
 
     const _checkForGameOver = () => {
