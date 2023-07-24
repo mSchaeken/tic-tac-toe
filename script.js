@@ -187,11 +187,11 @@ const gameboard = (() => {
     ]
 
     const getGameboardState = () => {
-        return gameboardState
+        return gameboard.gameboardState
     }
 
-    const resetGameboard = () => {
-        gameboardState = [
+    function resetGameboard () {
+        gameboard.gameboardState = [
             null, null, null,
             null, null, null,
             null, null, null
@@ -203,9 +203,9 @@ const gameboard = (() => {
         const inactiveMark = gameFlow.getInactivePlayer().getMark();
         const activePlayer = gameFlow.getActivePlayer().getName();
 
-        const gameOver = () => { 
+        const gameOver = (player = gameFlow.getActivePlayer().getName()) => { 
             displayController.toggleNewGameButton();
-            displayController.displayWinner(gameFlow.getActivePlayer().getName())
+            displayController.displayWinner(player)
             gameFlow.toggleGameIsActive();
             return;
         }
@@ -277,6 +277,16 @@ const gameboard = (() => {
         ) {
             gameOver()
         }
+
+        let tieCounter = 0
+        gameboard.gameboardState.forEach(element => {
+            if (element !== null) {
+                tieCounter++
+            } 
+        })
+        if (tieCounter === 9) {
+            gameOver(null)
+        }
     };
 
     const checkIfValidMove = function (index) {
@@ -304,6 +314,7 @@ const gameboard = (() => {
 
     const placePlayerMarker = function () {
         const that = this;
+        console.log(that)
 
         if (checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
@@ -324,17 +335,6 @@ const gameboard = (() => {
 
     const placeComputerMarker = function (indices) {
         const gameboardCells = document.querySelectorAll('.gameboard-cell')
-        
-        let playerOneMark = null;
-        let playerTwoMark = null;
-
-        if (gameFlow.playerOne.getMark() === 'X') {
-            playerOneMark = 'close';
-            playerTwoMark = 'circle';
-        } else {
-            playerOneMark = 'circle';
-            playerTwoMark = 'close';
-        }
         
         let move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(3), aiOpponent.getRandomInt(3))
         if (move !== false &&
