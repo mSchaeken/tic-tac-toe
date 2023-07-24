@@ -60,27 +60,6 @@ const gameFlow = (() => {
 
     let playerOneMarker = 'X';
     let playerTwoMarker = 'O';
-    const setMarkers = function () {
-        switch (this.id) {
-            case 'player-one-o':
-                playerOneMarker = 'O';
-                playerTwoMarker = 'X';
-                break;
-            case 'player-one-x':
-                playerOneMarker = 'X';
-                playerTwoMarker = 'O';
-                break;
-            case 'player-two-o':
-                playerOneMarker = 'X';
-                playerTwoMarker = 'O';
-                break;
-            case 'player-two-x':
-                playerOneMarker = 'O';
-                playerTwoMarker = 'X';
-                break;
-        }
-        displayController.displayPlayerMarker(playerOneMarker);
-    }
 
     let playerOne = null;
     let playerTwo = null;
@@ -138,6 +117,7 @@ const gameFlow = (() => {
             displayController.toggleGameInfoDisplay();
             displayController.clearDisplay();
             displayController.clearActiveGameInfo();
+            displayController.displayPlayerTwoComputerOrPlayer(gameFlow.getActivePlayer().getPlayerType())
             _resetPlayers();
             gameboard.resetGameboard();
         }
@@ -189,7 +169,6 @@ const gameFlow = (() => {
         getInactivePlayer,
         toggleGameIsActive,
         toggleActivePlayer,
-        setMarkers,
         getGameIsActive,
         startGame,
         resetGame,
@@ -202,200 +181,152 @@ const gameFlow = (() => {
 
 
 const gameboard = (() => {
-    const gameboardRows = {
-        topRow: [null, null, null],
-        middleRow: [null, null, null],
-        bottomRow: [null, null, null]
+    let gameboardState = [
+        null, null, null,
+        null, null, null,
+        null, null, null
+    ]
+
+    const getGameboardState = () => {
+        return gameboard.gameboardState
     }
 
-    const getGameboardRows = () => {
-        const allRows = [
-            gameboardRows.bottomRow,
-            gameboardRows.middleRow,
-            gameboardRows.topRow
-        ];
-
-        return allRows
-    }
-
-    const resetGameboard = () => {
-            gameboardRows.topRow = [null, null, null],
-            gameboardRows.middleRow = [null, null, null],
-            gameboardRows.bottomRow = [null, null, null]
+    function resetGameboard () {
+        gameboard.gameboardState = [
+            null, null, null,
+            null, null, null,
+            null, null, null
+        ]
     }
 
     const _checkForGameOver = () => {
-        const allRows = getGameboardRows()
-
         const activeMark = gameFlow.getActivePlayer().getMark();
         const inactiveMark = gameFlow.getInactivePlayer().getMark();
         const activePlayer = gameFlow.getActivePlayer().getName();
 
-        const checkRow = function (row) {
-            return row.find(
-              (mark) => mark === inactiveMark || mark === null
-            );
-          };
-        
-        //Check for horizontal wins
-        allRows.forEach(row => {
-            if (checkRow(row) === undefined) {
-                displayController.toggleNewGameButton();
-                displayController.displayWinner(gameFlow.getActivePlayer().getName())
-                gameFlow.toggleGameIsActive();
-                return;
-            }
-        })
-        
-        //Check for vertical wins
-        for (let i = 0; i < 3; i++) {
-            let verticalRow = [];
-
-            allRows.forEach(row => {
-                verticalRow.push(row[i]);
-            })
-
-            if (checkRow(verticalRow) === undefined) {
-                displayController.toggleNewGameButton();
-                displayController.displayWinner(gameFlow.getActivePlayer().getName())
-                gameFlow.toggleGameIsActive();
-                return;
-            };
-        };
-
-        //Check for diagonal wins
-        let diagonalRowOne = [];
-        let diagonalRowTwo = [];
-        let diagonalRows = [diagonalRowOne, diagonalRowTwo];
-
-        diagonalRowOne.push(
-            allRows[0][0],
-            allRows[1][1],
-            allRows[2][2]
-        );
-
-        diagonalRowTwo.push(
-            allRows[0][2],
-            allRows[1][1],
-            allRows[2][0]
-        );
-
-        diagonalRows.forEach(row => {
-            if (checkRow(row) === undefined) {
-                displayController.toggleNewGameButton();
-                displayController.displayWinner(gameFlow.getActivePlayer().getName())
-                gameFlow.toggleGameIsActive();
-                return;
-            }
-        });
-
-        //Check for ties
-        let rowFullCounter = 0
-        allRows.forEach(row => {
-            if (
-                row[0] !== null &
-                row[1] !== null &
-                row[2] !== null
-                ) {
-                rowFullCounter ++;
-            }
-        })
-
-        if (rowFullCounter === 3) {
+        const gameOver = (player = gameFlow.getActivePlayer().getName()) => { 
             displayController.toggleNewGameButton();
-            displayController.displayWinner(null)
+            displayController.displayWinner(player)
             gameFlow.toggleGameIsActive();
             return;
+        }
+
+        //Horizontal states
+        if (
+            gameboard.getGameboardState()[0] === activeMark &&
+            gameboard.getGameboardState()[1] === activeMark &&
+            gameboard.getGameboardState()[2] === activeMark
+            ) {
+                gameOver()
+            }
+        
+        if (
+            gameboard.getGameboardState()[3] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[5] === activeMark
+        ) {
+                gameOver()
+            }
+        
+
+        if (
+            gameboard.getGameboardState()[6] === activeMark &&
+            gameboard.getGameboardState()[7] === activeMark &&
+            gameboard.getGameboardState()[8] === activeMark
+        ) {
+                gameOver()
+            }
+        
+        //Vertical states
+        if (
+            gameboard.getGameboardState()[0] === activeMark &&
+            gameboard.getGameboardState()[3] === activeMark &&
+            gameboard.getGameboardState()[6] === activeMark
+        ) {
+            gameOver()
+        }
+
+        if (
+            gameboard.getGameboardState()[1] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[7] === activeMark
+        ) {
+            gameOver()
+        }
+
+        if (
+            gameboard.getGameboardState()[2] === activeMark &&
+            gameboard.getGameboardState()[5] === activeMark &&
+            gameboard.getGameboardState()[8] === activeMark
+        ) {
+            gameOver()
+        }
+
+        //Diagonal states
+        if (
+            gameboard.getGameboardState()[0] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[8] === activeMark
+        ) {
+            gameOver()
+        }
+
+        if (
+            gameboard.getGameboardState()[2] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[6] === activeMark
+        ) {
+            gameOver()
+        }
+
+        let tieCounter = 0
+        gameboard.gameboardState.forEach(element => {
+            if (element !== null) {
+                tieCounter++
+            } 
+        })
+        if (tieCounter === 9) {
+            gameOver(null)
         }
     };
 
     const checkIfValidMove = function (index) {
         cellIndex = parseInt(index);
 
-        switch (true) {
-            /*
-            Subtraction in indices is to account for the arrays being split up in 
-            three separate arrays and the HTML elements being indexed from 0-8
-            */
-            case (cellIndex < 3):
-                if (gameboardRows.bottomRow[cellIndex] === null) {
+                if (gameboard.gameboardState[cellIndex] === null) {
                     return true;
                 } else {
                     return false;
-                }
-            case (cellIndex >= 3 && cellIndex < 6):
-                if (gameboardRows.middleRow[cellIndex - 3] === null) {
-                    return true;
-                } else {
-                    return false;
-                }                
-            case (cellIndex >= 6 && cellIndex < 9):
-                if (gameboardRows.topRow[cellIndex - 6] === null) {
-                    return true;
-                } else {
-                    return false;
-                }            
+                } 
         }
-    }
 
-    const _updateGameboardRows = function (element) {
+    function _updateGameboardRows(element) {
         const that = element;
         const cellIndex = parseInt(that.id);
- 
-        if (checkIfValidMove(that.id) === true && gameFlow.getActivePlayer().getPlayerType() === 'player' ) {
-            /*
-            Subtraction in indices is to account for the arrays being split up in 
-            three separate arrays and the HTML elements being indexed from 0-8
-            */
-            switch (true) {
-                case (cellIndex < 3):
-                    gameboardRows.bottomRow[cellIndex] = gameFlow.getActivePlayer().getMark()
-                    break;
-                case (cellIndex >= 3 && cellIndex < 6):
-                    gameboardRows.middleRow[cellIndex - 3] = gameFlow.getActivePlayer().getMark()
-                    break;
-                case (cellIndex >= 6 && cellIndex < 9):
-                    gameboardRows.topRow[cellIndex - 6] = gameFlow.getActivePlayer().getMark()
-                    break;
-            }
+
+        if (checkIfValidMove(that.id) === true && gameFlow.getActivePlayer().getPlayerType() === 'player') {
+                    gameboard.gameboardState[cellIndex] = gameFlow.getActivePlayer().getMark();
         }
 
         if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
-            switch (element[0]) {
-                case (0):
-                    gameboardRows.bottomRow[element[1]] = gameFlow.getActivePlayer().getMark()
-                    break
-                case (1):
-                    gameboardRows.middleRow[element[1]] = gameFlow.getActivePlayer().getMark()
-                    break
-                case (2):
-                    gameboardRows.topRow[element[1]] = gameFlow.getActivePlayer().getMark()
-                    break
-            }
+            //implement
         }
     }
 
     const placePlayerMarker = function () {
         const that = this;
-
-        if (gameFlow.playerOne.getMark() === 'X') {
-            playerOneMarker = 'close';
-            playerTwoMarker = 'circle';
-        } else {
-            playerOneMarker = 'circle';
-            playerTwoMarker = 'close';
-        }
+        console.log(that)
 
         if (checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
 
             if (gameFlow.getActivePlayer().getName() === gameFlow.playerOne.getName()) {
-                this.textContent = playerOneMarker;
+                this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
             } else {
-                this.textContent = playerTwoMarker;
+                this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
@@ -405,17 +336,6 @@ const gameboard = (() => {
 
     const placeComputerMarker = function (indices) {
         const gameboardCells = document.querySelectorAll('.gameboard-cell')
-        
-        let playerOneMark = null;
-        let playerTwoMark = null;
-
-        if (gameFlow.playerOne.getMark() === 'X') {
-            playerOneMark = 'close';
-            playerTwoMark = 'circle';
-        } else {
-            playerOneMark = 'circle';
-            playerTwoMark = 'close';
-        }
         
         let move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(3), aiOpponent.getRandomInt(3))
         if (move !== false &&
@@ -441,8 +361,8 @@ const gameboard = (() => {
       };
 
     return {
-        gameboardRows,
-        getGameboardRows,
+        gameboardState,
+        getGameboardState,
         checkIfValidMove,
         resetGameboard,
         placePlayerMarker,
@@ -491,15 +411,10 @@ const displayController = (() => {
             playerOneMarkerSpan.textContent = '';
             playerTwoMarkerSpan.textContent = '';
         }  else {
-            if (mark === 'X') {
                 playerOneMarkerSpan.textContent = 'close';
                 playerTwoMarkerSpan.textContent = 'circle';
-            } else {
-                playerOneMarkerSpan.textContent = 'circle';
-                playerTwoMarkerSpan.textContent = 'close';
             }
         }
-    }
 
     const clearActiveGameInfo = () => {
         const playerOneMark = document.querySelector('.player-one-mark');
@@ -524,17 +439,10 @@ const displayController = (() => {
         markSpanTwo.className = 'material-symbols-outlined';          
         playerOneName.textContent = `${gameFlow.getPlayers()[0]}`;
         playerTwoName.textContent = `${gameFlow.getPlayers()[1]}`;
-        
-        if (gameFlow.getActivePlayer().getMark() === 'X') {
-            markSpanOne.textContent = 'close';
-            markSpanTwo.textContent = 'circle';
-        } else {
-            markSpanOne.textContent = 'circle';
-            markSpanTwo.textContent = 'close';
-        }
-
+        markSpanOne.textContent = 'close';
+        markSpanTwo.textContent = 'circle';
         playerOneMark.append(markSpanOne);
-        playerTwoMark.append(markSpanTwo);  
+        playerTwoMark.append(markSpanTwo); 
     }
 
     const displayWinner = (player) => {
@@ -597,18 +505,15 @@ const displayController = (() => {
         for (i = 0;  i < 9; i++) {
             const gameboardCell = document.createElement('span');
             gameboardCell.className = 'gameboard-cell material-symbols-outlined';
-            /*
-            (8 - i) was neccesary to start the index at 0 in the bottom row on screen.
-            Turned out to be a lot less practical than I thought, so might change this
-            later on but requires a fair bit of refactoring.
-            */
-            gameboardCell.id = (8 - i);
+
+            gameboardCell.id = i;
             gameboard.append(gameboardCell);
         }
     }
 
     displayPlayerMarker('X');
     toggleGameInfoDisplay();
+    displayPlayerTwoComputerOrPlayer('player');
     _displayGameboard();
 
     return {
@@ -669,13 +574,6 @@ const addListeners = (() => {
         button.addEventListener('click', gameFlow.resetGame)
     }
 
-    const _addMarkerButtonListeners = () => {
-        const buttons = document.querySelectorAll('.marker')
-        buttons.forEach(button => {
-            button.addEventListener('click', gameFlow.setMarkers);
-        });
-    }
-
     const _addGameboardListeners = (row1, row2, row3) => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
         gameboardCells.forEach(element => {
@@ -698,7 +596,6 @@ const addListeners = (() => {
 
     _addStartButtonListener();
     _addResetButtonListener();
-    _addMarkerButtonListeners();
     _addGameboardListeners();
     _opponentButtonListeners();
     _difficultyDropdownListener();
