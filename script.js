@@ -1,10 +1,12 @@
-const playerFactory = (name, mark) => {
+const playerFactory = (name, mark, playerType) => {
     const getName = () => name;
     const getMark = () => mark;
+    const getPlayerType = () => playerType;
 
     return {
         getName, 
-        getMark, 
+        getMark,
+        getPlayerType 
     };
 };
 
@@ -44,6 +46,12 @@ const gameFlow = (() => {
         if (activePlayer === gameFlow.playerOne) {
             activePlayer = gameFlow.playerTwo;
             inactivePlayer = gameFlow.playerOne;
+
+            if (gameFlow.getOpponent() === 'computer') {
+                setTimeout(gameboard.placeComputerMarker(), 3000)
+                toggleActivePlayer()
+            }
+
         } else {
             activePlayer = gameFlow.playerOne;
             inactivePlayer = gameFlow.playerTwo;
@@ -52,41 +60,34 @@ const gameFlow = (() => {
 
     let playerOneMarker = 'X';
     let playerTwoMarker = 'O';
-    const setMarkers = function () {
-        switch (this.id) {
-            case 'player-one-o':
-                playerOneMarker = 'O';
-                playerTwoMarker = 'X';
-                break;
-            case 'player-one-x':
-                playerOneMarker = 'X';
-                playerTwoMarker = 'O';
-                break;
-            case 'player-two-o':
-                playerOneMarker = 'X';
-                playerTwoMarker = 'O';
-                break;
-            case 'player-two-x':
-                playerOneMarker = 'O';
-                playerTwoMarker = 'X';
-                break;
-        }
-        displayController.displayPlayerMarker(playerOneMarker);
-    }
 
     let playerOne = null;
     let playerTwo = null;
     const _setPlayers = () => {
-        let playerOneForm = document.querySelector('#player-one').value;
-        let playerTwoForm = document.querySelector('#player-two').value;
+        if (opponent === 'player') {
+            let playerOneName = document.querySelector('#player-one').value;
+            let playerTwoName = document.querySelector('#player-two').value;
 
-        if (playerOneForm === '' || playerTwoForm === '') {
-            playerOneForm = 'Sherlock';
-            playerTwoForm = 'Watson';
-        } 
+            if (playerOneName === '' || playerTwoName === '') {
+                playerOneName = 'Sherlock';
+                playerTwoName = 'Watson';
+            } 
+            
+            gameFlow.playerOne = playerFactory(playerOneName, playerOneMarker, 'player');
+            gameFlow.playerTwo = playerFactory(playerTwoName, playerTwoMarker, 'player');
+        
+        } else {
+            let playerOneName = document.querySelector('#player-one').value;
+            let playerTwoName = computerOpponentName
 
-        gameFlow.playerOne = playerFactory(playerOneForm, playerOneMarker);
-        gameFlow.playerTwo = playerFactory(playerTwoForm, playerTwoMarker);
+            if (playerOneName === '') {
+                playerOneName === 'Sherlock'
+            }
+
+            gameFlow.playerOne = playerFactory(playerOneName, 'X', 'player')
+            gameFlow.playerTwo = playerFactory(playerTwoName, 'O', 'computer')
+        }
+        
 
         _setActivePlayer();
         _setInactivePlayer();
@@ -121,197 +122,210 @@ const gameFlow = (() => {
         }
     }
 
+    //
+    let opponent = 'player'
+    const setOpponent = function () {
+        if (this.id === 'player-versus-button') {
+            opponent = 'player'
+            displayController.displayPlayerTwoComputerOrPlayer('player')
+        } else {
+            opponent = 'computer'
+            aiOpponent.setAiOpponentDifficulty()
+            gameFlow.setComputerOpponentName()
+            displayController.displayPlayerTwoComputerOrPlayer('computer')
+        }
+    }
+    
+    const getOpponent = function () {
+        return opponent
+    }
+
+    let computerOpponentName = null
+    const setComputerOpponentName = () => {
+        switch (aiOpponent.getAiOpponentDifficulty()) {
+            case 'easy':
+                computerOpponentName = 'Fred Flintstone'
+                break
+            case 'medium':
+                computerOpponentName = 'Dr. John Dollar'
+                break
+            case 'impossible':
+                computerOpponentName = 'Moriarty'
+                break
+        }
+        
+        displayController.displayComputerOpponentName();
+    }
+
+    const getComputerOpponentName = () => {
+        return computerOpponentName
+    }
+
+
     return {
         getPlayers,
         getActivePlayer,
         getInactivePlayer,
         toggleGameIsActive,
         toggleActivePlayer,
-        setMarkers,
         getGameIsActive,
         startGame,
-        resetGame
+        resetGame,
+        setComputerOpponentName,
+        getComputerOpponentName,
+        setOpponent,
+        getOpponent
     };
 })();
 
 
 const gameboard = (() => {
-    const gameboardRows = {
-        topRow: [null, null, null],
-        middleRow: [null, null, null],
-        bottomRow: [null, null, null]
+    let gameboardState = [
+        null, null, null,
+        null, null, null,
+        null, null, null
+    ]
+
+    const getGameboardState = () => {
+        return gameboard.gameboardState
     }
 
-    const resetGameboard = () => {
-            gameboardRows.topRow = [null, null, null],
-            gameboardRows.middleRow = [null, null, null],
-            gameboardRows.bottomRow = [null, null, null]
+    function resetGameboard () {
+        gameboard.gameboardState = [
+            null, null, null,
+            null, null, null,
+            null, null, null
+        ]
     }
 
     const _checkForGameOver = () => {
-        const allRows = [
-            gameboardRows.bottomRow,
-            gameboardRows.middleRow,
-            gameboardRows.topRow
-        ];
-
         const activeMark = gameFlow.getActivePlayer().getMark();
         const inactiveMark = gameFlow.getInactivePlayer().getMark();
         const activePlayer = gameFlow.getActivePlayer().getName();
 
-        const checkRow = function (row) {
-            return row.find(
-              (mark) => mark === inactiveMark || mark === null
-            );
-          };
-        
-        //Check for horizontal wins
-        allRows.forEach(row => {
-            if (checkRow(row) === undefined) {
-                displayController.toggleNewGameButton();
-                displayController.displayWinner(gameFlow.getActivePlayer().getName())
-                gameFlow.toggleGameIsActive();
-                return;
-            }
-        })
-        
-        //Check for vertical wins
-        for (let i = 0; i < 3; i++) {
-            let verticalRow = [];
-
-            allRows.forEach(row => {
-                verticalRow.push(row[i]);
-            })
-
-            if (checkRow(verticalRow) === undefined) {
-                displayController.toggleNewGameButton();
-                displayController.displayWinner(gameFlow.getActivePlayer().getName())
-                gameFlow.toggleGameIsActive();
-                return;
-            };
-        };
-
-        //Check for diagonal wins
-        let diagonalRowOne = [];
-        let diagonalRowTwo = [];
-        let diagonalRows = [diagonalRowOne, diagonalRowTwo];
-
-        diagonalRowOne.push(
-            allRows[0][0],
-            allRows[1][1],
-            allRows[2][2]
-        );
-
-        diagonalRowTwo.push(
-            allRows[0][2],
-            allRows[1][1],
-            allRows[2][0]
-        );
-
-        diagonalRows.forEach(row => {
-            if (checkRow(row) === undefined) {
-                displayController.toggleNewGameButton();
-                displayController.displayWinner(gameFlow.getActivePlayer().getName())
-                gameFlow.toggleGameIsActive();
-                return;
-            }
-        });
-
-        //Check for ties
-        let rowFullCounter = 0
-        allRows.forEach(row => {
-            if (
-                row[0] !== null &
-                row[1] !== null &
-                row[2] !== null
-                ) {
-                rowFullCounter ++;
-            }
-        })
-
-        if (rowFullCounter === 3) {
+        const gameOver = (player = gameFlow.getActivePlayer().getName()) => { 
             displayController.toggleNewGameButton();
-            displayController.displayWinner(null)
+            displayController.displayWinner(player)
             gameFlow.toggleGameIsActive();
             return;
         }
+
+        //Horizontal states
+        if (
+            gameboard.getGameboardState()[0] === activeMark &&
+            gameboard.getGameboardState()[1] === activeMark &&
+            gameboard.getGameboardState()[2] === activeMark
+            ) {
+                gameOver()
+            }
+        
+        if (
+            gameboard.getGameboardState()[3] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[5] === activeMark
+        ) {
+                gameOver()
+            }
+        
+
+        if (
+            gameboard.getGameboardState()[6] === activeMark &&
+            gameboard.getGameboardState()[7] === activeMark &&
+            gameboard.getGameboardState()[8] === activeMark
+        ) {
+                gameOver()
+            }
+        
+        //Vertical states
+        if (
+            gameboard.getGameboardState()[0] === activeMark &&
+            gameboard.getGameboardState()[3] === activeMark &&
+            gameboard.getGameboardState()[6] === activeMark
+        ) {
+            gameOver()
+        }
+
+        if (
+            gameboard.getGameboardState()[1] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[7] === activeMark
+        ) {
+            gameOver()
+        }
+
+        if (
+            gameboard.getGameboardState()[2] === activeMark &&
+            gameboard.getGameboardState()[5] === activeMark &&
+            gameboard.getGameboardState()[8] === activeMark
+        ) {
+            gameOver()
+        }
+
+        //Diagonal states
+        if (
+            gameboard.getGameboardState()[0] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[8] === activeMark
+        ) {
+            gameOver()
+        }
+
+        if (
+            gameboard.getGameboardState()[2] === activeMark &&
+            gameboard.getGameboardState()[4] === activeMark &&
+            gameboard.getGameboardState()[6] === activeMark
+        ) {
+            gameOver()
+        }
+
+        let tieCounter = 0
+        gameboard.gameboardState.forEach(element => {
+            if (element !== null) {
+                tieCounter++
+            } 
+        })
+        if (tieCounter === 9) {
+            gameOver(null)
+        }
     };
 
-    const _checkIfValidMove = function (index) {
+    const checkIfValidMove = function (index) {
         cellIndex = parseInt(index);
 
-        switch (true) {
-            /*
-            Subtraction in indices is to account for the arrays being split up in 
-            three separate arrays and the HTML elements being indexed from 0-8
-            */
-            case (cellIndex < 3):
-                if (gameboardRows.bottomRow[cellIndex] === null) {
+                if (gameboard.gameboardState[cellIndex] === null) {
                     return true;
                 } else {
                     return false;
-                }
-            case (cellIndex >= 3 && cellIndex < 6):
-                if (gameboardRows.middleRow[cellIndex - 3] === null) {
-                    return true;
-                } else {
-                    return false;
-                }                
-            case (cellIndex >= 6 && cellIndex < 9):
-                if (gameboardRows.topRow[cellIndex - 6] === null) {
-                    return true;
-                } else {
-                    return false;
-                }            
+                } 
         }
-    }
 
-    const _updateGameboardRows = function (element) {
+    function _updateGameboardRows(element) {
         const that = element;
         const cellIndex = parseInt(that.id);
- 
-        if (_checkIfValidMove(that.id) === true) {
-            /*
-            Subtraction in indices is to account for the arrays being split up in 
-            three separate arrays and the HTML elements being indexed from 0-8
-            */
-            switch (true) {
-                case (cellIndex < 3):
-                    gameboardRows.bottomRow[cellIndex] = gameFlow.getActivePlayer().getMark()
-                    break;
-                case (cellIndex >= 3 && cellIndex < 6):
-                    gameboardRows.middleRow[cellIndex - 3] = gameFlow.getActivePlayer().getMark()
-                    break;
-                case (cellIndex >= 6 && cellIndex < 9):
-                    gameboardRows.topRow[cellIndex - 6] = gameFlow.getActivePlayer().getMark()
-                    break;
-            }
+
+        if (checkIfValidMove(that.id) === true && gameFlow.getActivePlayer().getPlayerType() === 'player') {
+                    gameboard.gameboardState[cellIndex] = gameFlow.getActivePlayer().getMark();
+        }
+
+        if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
+            //implement
         }
     }
 
-    const placeMarker = function () {
+    const placePlayerMarker = function () {
         const that = this;
-        let playerOneMark = null;
-        let playerTwoMark = null;
+        console.log(that)
 
-        if (gameFlow.playerOne.getMark() === 'X') {
-            playerOneMark = 'close';
-            playerTwoMark = 'circle';
-        } else {
-            playerOneMark = 'circle';
-            playerTwoMark = 'close';
-        }
-
-        if (_checkIfValidMove(that.id) === true &&
+        if (checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
 
-            if (gameFlow.getActivePlayer() === gameFlow.playerOne) {
-                this.textContent = playerOneMark;
+            if (gameFlow.getActivePlayer().getName() === gameFlow.playerOne.getName()) {
+                this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
             } else {
-                this.textContent = playerTwoMark;
+                this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
                 _checkForGameOver();
                 gameFlow.toggleActivePlayer();
@@ -319,9 +333,39 @@ const gameboard = (() => {
         }
     }
 
+    const placeComputerMarker = function (indices) {
+        const gameboardCells = document.querySelectorAll('.gameboard-cell')
+        
+        let move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(3), aiOpponent.getRandomInt(3))
+        if (move !== false &&
+          gameFlow.getGameIsActive() === true
+        ) {
+            console.log(move)
+            switch (move[0]) {
+                case 0:
+                    console.log(gameboardCells[move[1] + 0])
+                    gameboardCells[move[1] + 0].textContent = playerTwoMark
+                    break
+                case 1:
+                    console.log(gameboardCells[move[1] + 3])
+                    gameboardCells[move[1] + 3].textContent = playerTwoMark
+                    break
+                case 2:
+                    console.log(gameboardCells[move[1] + 6])
+                    gameboardCells[move[1] + 6].textContent = playerTwoMark
+                    break
+            }
+            _updateGameboardRows(move)
+        }
+      };
+
     return {
+        gameboardState,
+        getGameboardState,
+        checkIfValidMove,
         resetGameboard,
-        placeMarker,
+        placePlayerMarker,
+        placeComputerMarker,
     }
 })();
 
@@ -342,14 +386,20 @@ const displayController = (() => {
     const toggleGameInfoDisplay = () => {
         const gameActiveDiv = document.querySelector('.game-active-div');
         const gameInactiveDiv = document.querySelector('.game-inactive-div');
+        const computerOpponentDiv = document.querySelector('.computer-div')
+        const opponentSelectionDiv = document.querySelector('.opponent-selection-div')
 
         if (gameFlow.getGameIsActive() === true) {
             gameActiveDiv.style.display = 'flex';
             gameInactiveDiv.style.display = 'none';
+            opponentSelectionDiv.style.display = 'none'
         } else {
             gameActiveDiv.style.display = 'none';
             gameInactiveDiv.style.display = 'flex';
+            opponentSelectionDiv.style.display = 'flex'
+            computerOpponentDiv.style.display = 'flex';
         }
+
     }
 
     const displayPlayerMarker = (mark) => {
@@ -442,18 +492,32 @@ const displayController = (() => {
         })
     }
 
+    const displayPlayerTwoComputerOrPlayer = (opponent) => {
+        const playerOpponentDiv = document.querySelector('.player-two-div')
+        const computerOpponentDiv = document.querySelector('.computer-div')
+
+        if (opponent === 'player') {
+            playerOpponentDiv.style.display = 'flex'
+            computerOpponentDiv.style.display = 'none'
+        } else {
+            playerOpponentDiv.style.display = 'none'
+            computerOpponentDiv.style.display = 'flex'          
+        }
+    }
+
+    const displayComputerOpponentName = () => {
+        const computerOpponentNameDiv = document.querySelector('.computer-opponent-name-div')
+        computerOpponentNameDiv.textContent = `${gameFlow.getComputerOpponentName()}`
+    }
+
     const _displayGameboard = () => {
         const gameboard = document.querySelector('.gameboard-container');
         
         for (i = 0;  i < 9; i++) {
             const gameboardCell = document.createElement('span');
             gameboardCell.className = 'gameboard-cell material-symbols-outlined';
-            /*
-            (8 - i) was neccesary to start the index at 0 in the bottom row on screen.
-            Turned out to be a lot less practical than I thought, so might change this
-            later on but requires a fair bit of refactoring.
-            */
-            gameboardCell.id = (8 - i);
+
+            gameboardCell.id = i;
             gameboard.append(gameboardCell);
         }
     }
@@ -467,10 +531,46 @@ const displayController = (() => {
         toggleGameInfoDisplay,
         displayPlayerMarker,
         displayActiveGameInfo,
+        displayPlayerTwoComputerOrPlayer,
+        displayComputerOpponentName,
         clearActiveGameInfo,
         displayWinner,
         clearDisplay
     }
+})();
+
+const aiOpponent = (() => {
+
+    let aiDifficulty = 'easy'
+    const setAiOpponentDifficulty = function () {
+        const aiDifficultyDropdown = document.querySelector('#computer-difficulty-dropdown')
+        aiDifficulty = aiDifficultyDropdown.value
+    }
+
+    const getAiOpponentDifficulty = () => {
+        return aiDifficulty
+    }
+
+    const getRandomInt = function (max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    const getRandomValidMove = (row, rowindex) => {
+        if (gameboard.getGameboardRows()[row][rowindex] === null) {
+            const validIndices = [row, rowindex]
+            return validIndices;
+        } else {
+            return false;
+        }
+    }
+
+    return {
+        setAiOpponentDifficulty,
+        getAiOpponentDifficulty,
+        getRandomInt,
+        getRandomValidMove
+    }
+
 })();
 
 const addListeners = (() => {
@@ -493,14 +593,28 @@ const addListeners = (() => {
 
     const _addGameboardListeners = (row1, row2, row3) => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
-
         gameboardCells.forEach(element => {
-            element.addEventListener('click', gameboard.placeMarker);
+            element.addEventListener('click', gameboard.placePlayerMarker);
         });
-    } 
+    }
+
+    const _opponentButtonListeners = () => {
+        const buttons = document.querySelectorAll('.opponent-button')
+        buttons.forEach(element => {
+            element.addEventListener('click', gameFlow.setOpponent)
+        })
+    }
+
+    const _difficultyDropdownListener = () => {
+        const dropdown = document.querySelector('#computer-difficulty-dropdown')
+        dropdown.addEventListener('change', aiOpponent.setAiOpponentDifficulty)
+        dropdown.addEventListener('change', gameFlow.setComputerOpponentName)
+    }
 
     _addStartButtonListener();
     _addResetButtonListener();
     _addMarkerButtonListeners();
     _addGameboardListeners();
+    _opponentButtonListeners();
+    _difficultyDropdownListener();
 })();

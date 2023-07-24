@@ -30,12 +30,10 @@
                         </div>
                     </div>
                     <div class="marker-icons">
-                        <button class="marker" id="player-one-x"><span class="material-symbols-outlined">close</span></button>
-                        <button class="marker" id="player-one-o"><span class="material-symbols-outlined">circle</span></button>
+                        <div class="marker" id="player-one-x"><span class="material-symbols-outlined">close</span></div>
                     </div>
                     <div class="marker-icons">
-                        <button class="marker" id="player-two-o"><span class="material-symbols-outlined">circle</span></button>
-                        <button class="marker" id="player-two-x"><span class="material-symbols-outlined">close</span></button>
+                        <div class="marker" id="player-two-o"><span class="material-symbols-outlined">circle</span></div>
                     </div>
                     <div class="player-two-div">
                         <form class="player-form" action="post">
@@ -45,6 +43,10 @@
                         <div class="player-marker-div">
                             <span class="material-symbols-outlined" id="player-two-span"></span>
                         </div>
+                    </div>
+                    <div class="computer-div">
+                        <div>Opponent:</div>
+                        <div class="computer-opponent-name-div"></div>
                     </div>
                 </div>
                 <div class="start-div">
@@ -78,6 +80,21 @@
                     </div>
                 </div> 
                 
+            </div>
+            <div class="opponent-selection-div">
+                <div id="ai-versus">
+                    <button class="opponent-button" id="ai-versus-button">Play versus AI</button>
+                    <div>
+                        <select name="computer-difficulty" id="computer-difficulty-dropdown">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="impossible">Impossible</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="player-versus">
+                    <button class="opponent-button" id="player-versus-button">Play versus eachother</button>
+                </div>
             </div>
         </section>
     </main>
