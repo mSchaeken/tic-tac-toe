@@ -203,92 +203,91 @@ const gameboard = (() => {
         const activeMark = gameFlow.getActivePlayer().getMark();
         const inactiveMark = gameFlow.getInactivePlayer().getMark();
         const activePlayer = gameFlow.getActivePlayer().getName();
-
-        const gameOver = (player = gameFlow.getActivePlayer().getName()) => { 
-            displayController.toggleNewGameButton();
-            displayController.displayWinner(player)
-            gameFlow.toggleGameIsActive();
-            return;
-        }
-
+      
+        const gameOver = (player = gameFlow.getActivePlayer().getName()) => {
+          displayController.toggleNewGameButton();
+          displayController.displayWinner(player);
+          gameFlow.toggleGameIsActive();
+          return;
+        };
+      
         //Horizontal states
         if (
-            gameboard.getGameboardState()[0] === activeMark &&
-            gameboard.getGameboardState()[1] === activeMark &&
-            gameboard.getGameboardState()[2] === activeMark
-            ) {
-                gameOver()
-            }
-        
-        if (
-            gameboard.getGameboardState()[3] === activeMark &&
-            gameboard.getGameboardState()[4] === activeMark &&
-            gameboard.getGameboardState()[5] === activeMark
+          gameboard.getGameboardState()[0] === activeMark &&
+          gameboard.getGameboardState()[1] === activeMark &&
+          gameboard.getGameboardState()[2] === activeMark
         ) {
-                gameOver()
-            }
-        
-
+          gameOver();
+        }
+      
         if (
-            gameboard.getGameboardState()[6] === activeMark &&
-            gameboard.getGameboardState()[7] === activeMark &&
-            gameboard.getGameboardState()[8] === activeMark
+          gameboard.getGameboardState()[3] === activeMark &&
+          gameboard.getGameboardState()[4] === activeMark &&
+          gameboard.getGameboardState()[5] === activeMark
         ) {
-                gameOver()
-            }
-        
+          gameOver();
+        }
+      
+        if (
+          gameboard.getGameboardState()[6] === activeMark &&
+          gameboard.getGameboardState()[7] === activeMark &&
+          gameboard.getGameboardState()[8] === activeMark
+        ) {
+          gameOver();
+        }
+      
         //Vertical states
         if (
-            gameboard.getGameboardState()[0] === activeMark &&
-            gameboard.getGameboardState()[3] === activeMark &&
-            gameboard.getGameboardState()[6] === activeMark
+          gameboard.getGameboardState()[0] === activeMark &&
+          gameboard.getGameboardState()[3] === activeMark &&
+          gameboard.getGameboardState()[6] === activeMark
         ) {
-            gameOver()
+          gameOver();
         }
-
+      
         if (
-            gameboard.getGameboardState()[1] === activeMark &&
-            gameboard.getGameboardState()[4] === activeMark &&
-            gameboard.getGameboardState()[7] === activeMark
+          gameboard.getGameboardState()[1] === activeMark &&
+          gameboard.getGameboardState()[4] === activeMark &&
+          gameboard.getGameboardState()[7] === activeMark
         ) {
-            gameOver()
+          gameOver();
         }
-
+      
         if (
-            gameboard.getGameboardState()[2] === activeMark &&
-            gameboard.getGameboardState()[5] === activeMark &&
-            gameboard.getGameboardState()[8] === activeMark
+          gameboard.getGameboardState()[2] === activeMark &&
+          gameboard.getGameboardState()[5] === activeMark &&
+          gameboard.getGameboardState()[8] === activeMark
         ) {
-            gameOver()
+          gameOver();
         }
-
+      
         //Diagonal states
         if (
-            gameboard.getGameboardState()[0] === activeMark &&
-            gameboard.getGameboardState()[4] === activeMark &&
-            gameboard.getGameboardState()[8] === activeMark
+          gameboard.getGameboardState()[0] === activeMark &&
+          gameboard.getGameboardState()[4] === activeMark &&
+          gameboard.getGameboardState()[8] === activeMark
         ) {
-            gameOver()
+          gameOver();
         }
-
+      
         if (
-            gameboard.getGameboardState()[2] === activeMark &&
-            gameboard.getGameboardState()[4] === activeMark &&
-            gameboard.getGameboardState()[6] === activeMark
+          gameboard.getGameboardState()[2] === activeMark &&
+          gameboard.getGameboardState()[4] === activeMark &&
+          gameboard.getGameboardState()[6] === activeMark
         ) {
-            gameOver()
+          gameOver();
         }
-
-        let tieCounter = 0
-        gameboard.gameboardState.forEach(element => {
-            if (element !== null) {
-                tieCounter++
-            } 
-        })
+      
+        let tieCounter = 0;
+        gameboard.gameboardState.forEach((element) => {
+          if (element !== null) {
+            tieCounter++;
+          }
+        });
         if (tieCounter === 9) {
-            gameOver(null)
+          gameOver(null);
         }
-    };
+      };      
 
     const checkIfValidMove = function (index) {
         cellIndex = parseInt(index);
