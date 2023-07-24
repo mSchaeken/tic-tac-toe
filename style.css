@@ -158,11 +158,6 @@ button {
     border-width: 4px;
 }
 
-.marker:hover {
-    transition: 0.5s;
-    background-color: cyan;
-}
-
 .start-div,
 .reset-div {
     display: flex;
