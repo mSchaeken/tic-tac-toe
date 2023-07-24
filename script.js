@@ -117,6 +117,7 @@ const gameFlow = (() => {
             displayController.toggleGameInfoDisplay();
             displayController.clearDisplay();
             displayController.clearActiveGameInfo();
+            displayController.displayPlayerTwoComputerOrPlayer(gameFlow.getActivePlayer().getPlayerType())
             _resetPlayers();
             gameboard.resetGameboard();
         }
@@ -410,15 +411,10 @@ const displayController = (() => {
             playerOneMarkerSpan.textContent = '';
             playerTwoMarkerSpan.textContent = '';
         }  else {
-            if (mark === 'X') {
                 playerOneMarkerSpan.textContent = 'close';
                 playerTwoMarkerSpan.textContent = 'circle';
-            } else {
-                playerOneMarkerSpan.textContent = 'circle';
-                playerTwoMarkerSpan.textContent = 'close';
             }
         }
-    }
 
     const clearActiveGameInfo = () => {
         const playerOneMark = document.querySelector('.player-one-mark');
@@ -443,17 +439,10 @@ const displayController = (() => {
         markSpanTwo.className = 'material-symbols-outlined';          
         playerOneName.textContent = `${gameFlow.getPlayers()[0]}`;
         playerTwoName.textContent = `${gameFlow.getPlayers()[1]}`;
-        
-        if (gameFlow.getActivePlayer().getMark() === 'X') {
-            markSpanOne.textContent = 'close';
-            markSpanTwo.textContent = 'circle';
-        } else {
-            markSpanOne.textContent = 'circle';
-            markSpanTwo.textContent = 'close';
-        }
-
+        markSpanOne.textContent = 'close';
+        markSpanTwo.textContent = 'circle';
         playerOneMark.append(markSpanOne);
-        playerTwoMark.append(markSpanTwo);  
+        playerTwoMark.append(markSpanTwo); 
     }
 
     const displayWinner = (player) => {
@@ -524,6 +513,7 @@ const displayController = (() => {
 
     displayPlayerMarker('X');
     toggleGameInfoDisplay();
+    displayPlayerTwoComputerOrPlayer('player');
     _displayGameboard();
 
     return {
@@ -584,13 +574,6 @@ const addListeners = (() => {
         button.addEventListener('click', gameFlow.resetGame)
     }
 
-    const _addMarkerButtonListeners = () => {
-        const buttons = document.querySelectorAll('.marker')
-        buttons.forEach(button => {
-            button.addEventListener('click', gameFlow.setMarkers);
-        });
-    }
-
     const _addGameboardListeners = (row1, row2, row3) => {
         const gameboardCells = document.querySelectorAll('.gameboard-cell');
         gameboardCells.forEach(element => {
@@ -613,7 +596,6 @@ const addListeners = (() => {
 
     _addStartButtonListener();
     _addResetButtonListener();
-    _addMarkerButtonListeners();
     _addGameboardListeners();
     _opponentButtonListeners();
     _difficultyDropdownListener();
