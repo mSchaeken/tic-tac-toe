@@ -208,7 +208,7 @@ const gameboard = (() => {
           displayController.toggleNewGameButton();
           displayController.displayWinner(player);
           gameFlow.toggleGameIsActive();
-          return;
+          return true;
         };
       
         //Horizontal states
@@ -308,7 +308,7 @@ const gameboard = (() => {
         }
 
         if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
-            //implement
+            gameboard.gameboardState[element] = gameFlow.getActivePlayer().getMark()
         }
     }
 
@@ -336,26 +336,16 @@ const gameboard = (() => {
     const placeComputerMarker = function (indices) {
         const gameboardCells = document.querySelectorAll('.gameboard-cell')
         
-        let move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(3), aiOpponent.getRandomInt(3))
+        let move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(8))
         if (move !== false &&
           gameFlow.getGameIsActive() === true
         ) {
             console.log(move)
-            switch (move[0]) {
-                case 0:
-                    console.log(gameboardCells[move[1] + 0])
-                    gameboardCells[move[1] + 0].textContent = playerTwoMark
-                    break
-                case 1:
-                    console.log(gameboardCells[move[1] + 3])
-                    gameboardCells[move[1] + 3].textContent = playerTwoMark
-                    break
-                case 2:
-                    console.log(gameboardCells[move[1] + 6])
-                    gameboardCells[move[1] + 6].textContent = playerTwoMark
-                    break
-            }
+            gameboardCells[move].textContent = gameFlow.getActivePlayer().getMark()
             _updateGameboardRows(move)
+            _checkForGameOver()
+        } else if (gameFlow.getGameIsActive() === true) {
+            placeComputerMarker()
         }
       };
 
@@ -544,9 +534,9 @@ const aiOpponent = (() => {
         return Math.floor(Math.random() * max);
     }
 
-    const getRandomValidMove = (row, rowindex) => {
-        if (gameboard.getGameboardRows()[row][rowindex] === null) {
-            const validIndices = [row, rowindex]
+    const getRandomValidMove = (index) => {
+        if (gameboard.getGameboardState()[index] === null) {
+            const validIndices = [index]
             return validIndices;
         } else {
             return false;
