@@ -102,7 +102,7 @@ button {
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    margin-top: 2vw;
+    margin-top: 3vh;
 }
 
 .player-one-div,
@@ -111,7 +111,7 @@ button {
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    margin-top: 2vw;
+    margin-top: 2vh;
 }
 
 .player-game-div {
@@ -167,6 +167,7 @@ button {
     justify-content: center;
     align-items: center;
     margin-top: 8px;
+    max-width: 200px;
 }
 
 div.reset-div {
