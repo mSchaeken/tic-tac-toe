@@ -214,8 +214,9 @@ const gameboard = (() => {
 
     }
 
-    function checkForGameOver (board) {
+    function checkForGameOver (board, player) {
         const activeMark = gameFlow.getActivePlayer().getMark();
+        const inactiveMark = gameFlow.getActivePlayer().getMark();
 
         //Horizontal states
         if (
@@ -283,19 +284,16 @@ const gameboard = (() => {
         ) {
           return true;
         }
-      
-        let tieCounter = 0;
-        gameboard.gameboardState.forEach((element) => {
-          if (element !== null) {
-            tieCounter++;
-          }
-        });
-
-        if (tieCounter === 9) {           
-            return undefined;
+        if (
+            gameboard
+                .getGameboardState()
+                .filter(index => index !== activeMark && index !== inactiveMark)
+            === undefined
+        ) {
+            return undefined
         }
-
-            return false
+    
+        return false
       };      
 
     const checkIfValidMove = function (index) {
@@ -356,8 +354,25 @@ const gameboard = (() => {
 
     const placeComputerMarker = function (indices) {
         const gameboardCells = document.querySelectorAll('.gameboard-cell')
+        let move = null
         
-        let move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(8))
+        switch (aiOpponent.getAiOpponentDifficulty()) {
+            case 'easy':
+                move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(9))
+                break
+            case 'medium':
+                const randomInt = aiOpponent.getRandomInt(2)
+                if (randomInt === 0) {
+                    move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(9))
+                } else {
+                    move = minimax()
+                }
+                break
+            case 'impossible':
+                move = minimax()
+                break                
+        }
+
         if (move !== false &&
           gameFlow.getGameIsActive() === true
         ) {
@@ -585,24 +600,90 @@ const aiOpponent = (() => {
         IF terminal state -> see who won and assign either positive or negative value to moveValue
         ELSE -> call function again
 
-    */
+    */ 
 
-    function minimax (board, player) {
-        let moveValue = 0 
-        if (gameboard.checkForGameOver(board) === true) {
+    let testBoard = ["O",1,"X","X",4,"X",6,"O","O"];
+
+    let humanPlayer = 'X'
+    let aiPlayer = 'O'
+    
+    function getEmptyIndices (board) {
+        return board.filter(spot => spot != 'X' && spot != 'O')
+    }
+
+    function terminalStateChecker (board, player) {
+        if (gameboard.checkForGameOver(board) === undefined) {
 
             if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
-                moveValue += 10
+                return moveValue += 10
+            } else if (gameFlow.getActivePlayer().getPlayerType() === 'player') {
+                return moveValue -= 10
+            } else {
                 return moveValue
             }
         }
     }
 
+    function minimax (board, player) {
+        let availableIndices = aiOpponent.getEmptyIndices(board)
+        let possibleMoves = []
+
+        aiOpponent.terminalStateChecker(board)
+
+        for (let i = 0; i < availableIndices.length; i++) {
+            let move = {}
+            move.index = board[availableIndices[i]]
+            board[availableIndices[i]] = player
+
+            if (player === humanPlayer) {
+                let result = minimax(board, aiPlayer)
+                move.score = result.score
+            }
+            else {
+                let result = minimax(board, humanPlayer)
+                move.score = result.score
+            }
+
+            board[availableIndices[i]] = move.index
+            possibleMoves.push(move)
+        }
+
+        return aiOpponent.calcOptimalMove(board)
+    }
+    
+    function calcOptimalMove (board) {
+        let optimalMove = null
+
+        if (player ===  aiPlayer) {
+            let finalScore = -10000
+            for (let i; i < possibleMoves.length; i++) {
+                if (possibleMoves[i].score > finalScore) {
+                    finalScore = possibleMoves[i].score
+                    optimalMove = i;
+                }
+            }
+        }
+        else {
+            let finalScore = 10000
+            for (let i; i < possibleMoves.length; i++) {
+                if (possibleMoves[i].score < finalScore) {
+                    finalScore = possibleMoves[i].score
+                    optimalMove = i;
+                }
+            }
+        }
+
+        return optimalMove
+    }
+
     return {
+        testBoard,
         setAiOpponentDifficulty,
         getAiOpponentDifficulty,
         getRandomInt,
-        getRandomValidMove
+        getRandomValidMove,
+        getEmptyIndices,
+        minimax
     }
 
 })();
