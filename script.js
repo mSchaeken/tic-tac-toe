@@ -199,82 +199,87 @@ const gameboard = (() => {
         ]
     }
 
-    function _gameOver (player = gameFlow.getActivePlayer().getName()) {
+    function _gameOver (player) {
+        if (player !== undefined) {
         displayController.toggleNewGameButton();
-        displayController.displayWinner(player);
+        displayController.displayWinner(gameFlow.getActivePlayer().getName());
         gameFlow.toggleGameIsActive();
         return true
+        }
+
+        displayController.toggleNewGameButton();
+        displayController.displayWinner();
+        gameFlow.toggleGameIsActive();
+        return true
+
     }
 
-    const _checkForGameOver = () => {
+    function checkForGameOver (board) {
         const activeMark = gameFlow.getActivePlayer().getMark();
-        const inactiveMark = gameFlow.getInactivePlayer().getMark();
-        const activePlayer = gameFlow.getActivePlayer().getName();
-      
-      
+
         //Horizontal states
         if (
-          gameboard.getGameboardState()[0] === activeMark &&
-          gameboard.getGameboardState()[1] === activeMark &&
-          gameboard.getGameboardState()[2] === activeMark
+          board[0] === activeMark &&
+          board[1] === activeMark &&
+          board[2] === activeMark
         ) {
           return true;
         }
       
         if (
-          gameboard.getGameboardState()[3] === activeMark &&
-          gameboard.getGameboardState()[4] === activeMark &&
-          gameboard.getGameboardState()[5] === activeMark
+          board[3] === activeMark &&
+          board[4] === activeMark &&
+          board[5] === activeMark
         ) {
           return true;
         }
       
         if (
-          gameboard.getGameboardState()[6] === activeMark &&
-          gameboard.getGameboardState()[7] === activeMark &&
-          gameboard.getGameboardState()[8] === activeMark
+          board[6] === activeMark &&
+          board[7] === activeMark &&
+          board[8] === activeMark
         ) {
           return true;
         }
       
         //Vertical states
         if (
-          gameboard.getGameboardState()[0] === activeMark &&
-          gameboard.getGameboardState()[3] === activeMark &&
-          gameboard.getGameboardState()[6] === activeMark
+          board[0] === activeMark &&
+          board[3] === activeMark &&
+          board[6] === activeMark
         ) {
           return true;
         }
       
         if (
-          gameboard.getGameboardState()[1] === activeMark &&
-          gameboard.getGameboardState()[4] === activeMark &&
-          gameboard.getGameboardState()[7] === activeMark
+          board[1] === activeMark &&
+          board[4] === activeMark &&
+          board[7] === activeMark
         ) {
           return true;
         }
       
         if (
-          gameboard.getGameboardState()[2] === activeMark &&
-          gameboard.getGameboardState()[5] === activeMark &&
-          gameboard.getGameboardState()[8] === activeMark
+          board[2] === activeMark &&
+          board[5] === activeMark &&
+          board[8] === activeMark
         ) {
           return true;
         }
       
         //Diagonal states
         if (
-          gameboard.getGameboardState()[0] === activeMark &&
-          gameboard.getGameboardState()[4] === activeMark &&
-          gameboard.getGameboardState()[8] === activeMark
+          board[0] === activeMark &&
+          board[4] === activeMark &&
+          board[8] === activeMark
         ) {
           return true;
         }
       
         if (
-          gameboard.getGameboardState()[2] === activeMark &&
-          gameboard.getGameboardState()[4] === activeMark &&
-          gameboard.getGameboardState()[6] === activeMark
+          board[2] === activeMark &&
+          board[4] === activeMark &&
+          board[6] === activeMark
         ) {
           return true;
         }
@@ -286,11 +291,11 @@ const gameboard = (() => {
           }
         });
 
-        if (tieCounter === 9) {
-          return true;
+        if (tieCounter === 9) {           
+            return undefined;
         }
 
-        return false
+            return false
       };      
 
     const checkIfValidMove = function (index) {
@@ -325,15 +330,24 @@ const gameboard = (() => {
             if (gameFlow.getActivePlayer().getName() === gameFlow.playerOne.getName()) {
                 this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
-                if (_checkForGameOver() === true) {
-                    _gameOver()
+                let isGameOver = checkForGameOver(gameboard.getGameboardState())
+
+                if (
+                    isGameOver === true ||
+                    isGameOver === undefined
+                    ) {
+                    _gameOver(isGameOver)
                 }
                 gameFlow.toggleActivePlayer();
             } else {
                 this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
-                if (_checkForGameOver() === true) {
-                    _gameOver()
+                let isGameOver = checkForGameOver(gameboard.getGameboardState())
+                if (
+                    isGameOver === true ||
+                    isGameOver === undefined
+                    ) {
+                    _gameOver(isGameOver)
                 }
                 gameFlow.toggleActivePlayer();
             }
@@ -349,8 +363,13 @@ const gameboard = (() => {
         ) {
             gameboardCells[move].textContent = gameFlow.getActivePlayer().getMark()
             _updateGameboardRows(move)
-            if (_checkForGameOver() === true) {
-                _gameOver()
+            let isGameOver = checkForGameOver(gameboard.getGameboardState())
+
+            if (
+                isGameOver === true ||
+                isGameOver === undefined
+                ) {
+                _gameOver(isGameOver)
             }
         } else if (gameFlow.getGameIsActive() === true) {
             placeComputerMarker()
@@ -360,6 +379,7 @@ const gameboard = (() => {
     return {
         gameboardState,
         getGameboardState,
+        checkForGameOver,
         checkIfValidMove,
         resetGameboard,
         placePlayerMarker,
@@ -567,7 +587,16 @@ const aiOpponent = (() => {
 
     */
 
+    function minimax (board, player) {
+        let moveValue = 0 
+        if (gameboard.checkForGameOver(board) === true) {
 
+            if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
+                moveValue += 10
+                return moveValue
+            }
+        }
+    }
 
     return {
         setAiOpponentDifficulty,
