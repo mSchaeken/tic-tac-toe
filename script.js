@@ -199,17 +199,18 @@ const gameboard = (() => {
         ]
     }
 
+    function _gameOver (player = gameFlow.getActivePlayer().getName()) {
+        displayController.toggleNewGameButton();
+        displayController.displayWinner(player);
+        gameFlow.toggleGameIsActive();
+        return true
+    }
+
     const _checkForGameOver = () => {
         const activeMark = gameFlow.getActivePlayer().getMark();
         const inactiveMark = gameFlow.getInactivePlayer().getMark();
         const activePlayer = gameFlow.getActivePlayer().getName();
       
-        const gameOver = (player = gameFlow.getActivePlayer().getName()) => {
-          displayController.toggleNewGameButton();
-          displayController.displayWinner(player);
-          gameFlow.toggleGameIsActive();
-          return true;
-        };
       
         //Horizontal states
         if (
@@ -217,7 +218,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[1] === activeMark &&
           gameboard.getGameboardState()[2] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         if (
@@ -225,7 +226,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[4] === activeMark &&
           gameboard.getGameboardState()[5] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         if (
@@ -233,7 +234,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[7] === activeMark &&
           gameboard.getGameboardState()[8] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         //Vertical states
@@ -242,7 +243,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[3] === activeMark &&
           gameboard.getGameboardState()[6] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         if (
@@ -250,7 +251,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[4] === activeMark &&
           gameboard.getGameboardState()[7] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         if (
@@ -258,7 +259,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[5] === activeMark &&
           gameboard.getGameboardState()[8] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         //Diagonal states
@@ -267,7 +268,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[4] === activeMark &&
           gameboard.getGameboardState()[8] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         if (
@@ -275,7 +276,7 @@ const gameboard = (() => {
           gameboard.getGameboardState()[4] === activeMark &&
           gameboard.getGameboardState()[6] === activeMark
         ) {
-          gameOver();
+          return true;
         }
       
         let tieCounter = 0;
@@ -284,9 +285,12 @@ const gameboard = (() => {
             tieCounter++;
           }
         });
+
         if (tieCounter === 9) {
-          gameOver(null);
+          return true;
         }
+
+        return false
       };      
 
     const checkIfValidMove = function (index) {
@@ -314,7 +318,6 @@ const gameboard = (() => {
 
     const placePlayerMarker = function () {
         const that = this;
-        console.log(that)
 
         if (checkIfValidMove(that.id) === true &&
             gameFlow.getGameIsActive() === true) {
@@ -322,12 +325,16 @@ const gameboard = (() => {
             if (gameFlow.getActivePlayer().getName() === gameFlow.playerOne.getName()) {
                 this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
-                _checkForGameOver();
+                if (_checkForGameOver() === true) {
+                    _gameOver()
+                }
                 gameFlow.toggleActivePlayer();
             } else {
                 this.textContent = gameFlow.getActivePlayer().getMark();
                 _updateGameboardRows(that);
-                _checkForGameOver();
+                if (_checkForGameOver() === true) {
+                    _gameOver()
+                }
                 gameFlow.toggleActivePlayer();
             }
         }
@@ -340,10 +347,11 @@ const gameboard = (() => {
         if (move !== false &&
           gameFlow.getGameIsActive() === true
         ) {
-            console.log(move)
             gameboardCells[move].textContent = gameFlow.getActivePlayer().getMark()
             _updateGameboardRows(move)
-            _checkForGameOver()
+            if (_checkForGameOver() === true) {
+                _gameOver()
+            }
         } else if (gameFlow.getGameIsActive() === true) {
             placeComputerMarker()
         }
@@ -542,6 +550,24 @@ const aiOpponent = (() => {
             return false;
         }
     }
+
+    //Minimax
+
+    /*
+    BOARD EVALUATION
+    new depth 0
+    new moveValue 0
+    new array to store empty indices
+    Take board array
+    Loop through board array to check for empty spots and push to new array
+    Take random empty spot and push to board array
+    Check for terminal state
+        IF terminal state -> see who won and assign either positive or negative value to moveValue
+        ELSE -> call function again
+
+    */
+
+
 
     return {
         setAiOpponentDifficulty,
