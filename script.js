@@ -199,8 +199,8 @@ const gameboard = (() => {
         ]
     }
 
-    function _gameOver (player) {
-        if (player !== undefined) {
+    function _gameOver (gameIsOver) {
+        if (gameIsOver === true) {
         displayController.toggleNewGameButton();
         displayController.displayWinner(gameFlow.getActivePlayer().getName());
         gameFlow.toggleGameIsActive();
@@ -211,90 +211,41 @@ const gameboard = (() => {
         displayController.displayWinner();
         gameFlow.toggleGameIsActive();
         return true
-
     }
 
-    function checkForGameOver (board, player) {
-        const activeMark = gameFlow.getActivePlayer().getMark();
-        const inactiveMark = gameFlow.getActivePlayer().getMark();
-
+    function checkForGameOver(
+        board,
+        player = gameFlow.getActivePlayer().getMark(),
+        opponent = gameFlow.getInactivePlayer().getMark(),
+        ) {
         //Horizontal states
         if (
-          board[0] === activeMark &&
-          board[1] === activeMark &&
-          board[2] === activeMark
+          (board[0] === player && board[1] === player && board[2] === player) ||
+          (board[3] === player && board[4] === player && board[5] === player) ||
+          (board[6] === player && board[7] === player && board[8] === player)
         ) {
           return true;
         }
-      
-        if (
-          board[3] === activeMark &&
-          board[4] === activeMark &&
-          board[5] === activeMark
-        ) {
-          return true;
-        }
-      
-        if (
-          board[6] === activeMark &&
-          board[7] === activeMark &&
-          board[8] === activeMark
-        ) {
-          return true;
-        }
-      
+
         //Vertical states
         if (
-          board[0] === activeMark &&
-          board[3] === activeMark &&
-          board[6] === activeMark
-        ) {
-          return true;
-        }
-      
-        if (
-          board[1] === activeMark &&
-          board[4] === activeMark &&
-          board[7] === activeMark
-        ) {
-          return true;
-        }
-      
-        if (
-          board[2] === activeMark &&
-          board[5] === activeMark &&
-          board[8] === activeMark
+          (board[0] === player && board[3] === player && board[6] === player) ||
+          (board[1] === player && board[4] === player && board[7] === player) ||
+          (board[2] === player && board[5] === player && board[8] === player)
         ) {
           return true;
         }
       
         //Diagonal states
         if (
-          board[0] === activeMark &&
-          board[4] === activeMark &&
-          board[8] === activeMark
+          (board[0] === player && board[4] === player && board[8] === player) ||
+          (board[2] === player && board[4] === player && board[6] === player)
         ) {
           return true;
         }
       
-        if (
-          board[2] === activeMark &&
-          board[4] === activeMark &&
-          board[6] === activeMark
-        ) {
-          return true;
-        }
-        if (
-            gameboard
-                .getGameboardState()
-                .filter(index => index !== activeMark && index !== inactiveMark)
-            === undefined
-        ) {
-            return undefined
-        }
-    
-        return false
-      };      
+        return false;
+    }
 
     const checkIfValidMove = function (index) {
         cellIndex = parseInt(index);
@@ -305,6 +256,10 @@ const gameboard = (() => {
                     return false;
                 } 
         }
+
+    function getEmptyIndices (board) {
+        return board.filter(spot => spot != 'X' && spot != 'O')
+    }
 
     function _updateGameboardRows(element) {
         const that = element;
@@ -320,35 +275,23 @@ const gameboard = (() => {
     }
 
     const placePlayerMarker = function () {
-        const that = this;
+    const that = this;
 
-        if (checkIfValidMove(that.id) === true &&
-            gameFlow.getGameIsActive() === true) {
+    if (checkIfValidMove(that.id) === true && gameFlow.getGameIsActive() === true) {
+        _updateGameboardRows(that);
+        let isGameOver = checkForGameOver(gameboard.getGameboardState())
+        this.textContent = gameFlow.getActivePlayer().getMark();
 
-            if (gameFlow.getActivePlayer().getName() === gameFlow.playerOne.getName()) {
-                this.textContent = gameFlow.getActivePlayer().getMark();
-                _updateGameboardRows(that);
-                let isGameOver = checkForGameOver(gameboard.getGameboardState())
+            if (isGameOver === true) {
+                _gameOver(isGameOver)
+            } 
 
-                if (
-                    isGameOver === true ||
-                    isGameOver === undefined
-                    ) {
-                    _gameOver(isGameOver)
-                }
-                gameFlow.toggleActivePlayer();
-            } else {
-                this.textContent = gameFlow.getActivePlayer().getMark();
-                _updateGameboardRows(that);
-                let isGameOver = checkForGameOver(gameboard.getGameboardState())
-                if (
-                    isGameOver === true ||
-                    isGameOver === undefined
-                    ) {
-                    _gameOver(isGameOver)
-                }
-                gameFlow.toggleActivePlayer();
+            else if (gameboard.getEmptyIndices(gameboard.getGameboardState()).length === 0) {
+                isGameOver = 'Tie'
+                _gameOver(isGameOver)
             }
+
+            gameFlow.toggleActivePlayer();
         }
     }
 
@@ -380,10 +323,7 @@ const gameboard = (() => {
             _updateGameboardRows(move)
             let isGameOver = checkForGameOver(gameboard.getGameboardState())
 
-            if (
-                isGameOver === true ||
-                isGameOver === undefined
-                ) {
+            if (isGameOver === player) {
                 _gameOver(isGameOver)
             }
         } else if (gameFlow.getGameIsActive() === true) {
@@ -396,6 +336,7 @@ const gameboard = (() => {
         getGameboardState,
         checkForGameOver,
         checkIfValidMove,
+        getEmptyIndices,
         resetGameboard,
         placePlayerMarker,
         placeComputerMarker,
@@ -606,74 +547,50 @@ const aiOpponent = (() => {
 
     let humanPlayer = 'X'
     let aiPlayer = 'O'
-    
-    function getEmptyIndices (board) {
-        return board.filter(spot => spot != 'X' && spot != 'O')
+
+    function findOptimalMove (board) {
+        let possibleMoves = gameboard.getEmptyIndices(board)
+        let bestMove = undefined
+        
+        // for each move in board :
+        for (let i = 0; i < possibleMoves.length; i++) {
+            possibleMoves[i]
+        }
+        // if current move is better than bestMove
+        //     bestMove = current move
+        // return bestMove
     }
 
-    function terminalStateChecker (board, player) {
-        if (gameboard.checkForGameOver(board) === undefined) {
+    function minimax (board, depth, player) {
+        //Check for terminal state
+        if (gameboard.checkForGameOver(board, )) {
 
-            if (gameFlow.getActivePlayer().getPlayerType() === 'computer') {
-                return moveValue += 10
-            } else if (gameFlow.getActivePlayer().getPlayerType() === 'player') {
-                return moveValue -= 10
-            } else {
-                return moveValue
-            }
         }
+        //If terminal state is reached by maximising player +10
+        //If terminal state is reach by minimising player -10
+        //If terminal state is a tie +0
+
+        // if isMaximizingPlayer :
+        // bestVal = -INFINITY 
+        // for each move in board :
+        //     value = minimax(board, depth+1, false)
+        //     bestVal = max( bestVal, value) 
+        // return bestVal
+
+        // else :
+        // bestVal = +INFINITY 
+        // for each move in board :
+        //     value = minimax(board, depth+1, true)
+        //     bestVal = min(bestVal, value) 
+        // return bestVal
     }
 
-    function minimax (board, player) {
-        let availableIndices = aiOpponent.getEmptyIndices(board)
-        let possibleMoves = []
-
-        aiOpponent.terminalStateChecker(board)
-
-        for (let i = 0; i < availableIndices.length; i++) {
-            let move = {}
-            move.index = board[availableIndices[i]]
-            board[availableIndices[i]] = player
-
-            if (player === humanPlayer) {
-                let result = minimax(board, aiPlayer)
-                move.score = result.score
-            }
-            else {
-                let result = minimax(board, humanPlayer)
-                move.score = result.score
-            }
-
-            board[availableIndices[i]] = move.index
-            possibleMoves.push(move)
-        }
-
-        return aiOpponent.calcOptimalMove(board)
-    }
-    
-    function calcOptimalMove (board) {
-        let optimalMove = null
-
-        if (player ===  aiPlayer) {
-            let finalScore = -10000
-            for (let i; i < possibleMoves.length; i++) {
-                if (possibleMoves[i].score > finalScore) {
-                    finalScore = possibleMoves[i].score
-                    optimalMove = i;
-                }
-            }
-        }
-        else {
-            let finalScore = 10000
-            for (let i; i < possibleMoves.length; i++) {
-                if (possibleMoves[i].score < finalScore) {
-                    finalScore = possibleMoves[i].score
-                    optimalMove = i;
-                }
-            }
-        }
-
-        return optimalMove
+    function isMovesLeft (board) {
+        for (let i = 0; i < 9; i++)
+             if (i === null) {
+                return true
+             }
+             return false
     }
 
     return {
@@ -682,7 +599,6 @@ const aiOpponent = (() => {
         getAiOpponentDifficulty,
         getRandomInt,
         getRandomValidMove,
-        getEmptyIndices,
         minimax
     }
 
