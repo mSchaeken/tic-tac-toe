@@ -296,7 +296,6 @@ const gameboard = (() => {
 
     const placeComputerMarker = function (indices) {
 
-
         const gameboardCells = document.querySelectorAll('.gameboard-cell')
         let move = null
         
@@ -309,7 +308,7 @@ const gameboard = (() => {
                 if (randomInt === 0) {
                     move = aiOpponent.getRandomValidMove(aiOpponent.getRandomInt(9))
                 } else {
-                    move = minimax()
+                    move = aiOpponent.findOptimalMove(gameboard.getGameboardState())
                 }
                 break
             case 'impossible':
@@ -317,7 +316,6 @@ const gameboard = (() => {
                 break                
         }
 
-        console.log(move)
         if (move !== false &&
           gameFlow.getGameIsActive() === true
         ) {
@@ -536,26 +534,6 @@ const aiOpponent = (() => {
         }
     }
 
-    //Minimax
-
-    /*
-    BOARD EVALUATION
-    new depth 0
-    new moveValue 0
-    new array to store empty indices
-    Take board array
-    Loop through board array to check for empty spots and push to new array
-    Take random empty spot and push to board array
-    Check for terminal state
-        IF terminal state -> see who won and assign either positive or negative value to moveValue
-        ELSE -> call function again
-
-    */
-   
-    let boardToTraverse = gameboard.getGameboardState()
-
-    let testBoard = ["O",1,"X","X",4,"X",6,"O","O"];
-
     let player = 'O'
     let opponent = 'X'
 
@@ -627,7 +605,6 @@ const aiOpponent = (() => {
     }
 
     return {
-        testBoard,
         setAiOpponentDifficulty,
         getAiOpponentDifficulty,
         getRandomInt,
