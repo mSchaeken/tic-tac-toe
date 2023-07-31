@@ -283,4 +283,9 @@ div.reset-div {
     margin-top: 8px;
     width: 6vw;
     height: 24px;
+    border: solid;
+    border-width: 2px;
+    border-color: var(--grey-blue);
+    background-color: white;
+    border-radius: 2px;
 }
