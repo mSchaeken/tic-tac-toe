@@ -16,9 +16,9 @@ In practice this means playing against the impossible AI will always result in a
 
 ## Project goals
 
-I created this project in order to practice javascript OOP principles and learning how to code something without using the global namespace by making use of IIFE's and modules. One of the biggest hurdles was managing the constantly changing context of the `this` keyword. Another challenge was building my modules in a way that makes sensible use of private and public functions. Meaning you don't end up returning every single function as a public function in the end. I'm still not satisfied with the result, but seeing how time is limited and there's still a lot more to learn, it's time to move on to a new project.
+I created this project in order to practice javascript OOP principles and learning how to code something without using the global namespace by making use of IIFE's and modules. One of the biggest hurdles was managing the constantly changing context of the `this` keyword. Another challenge was building my modules in a way that makes sensible use of private and public functions. Meaning you don't end up returning every single function as a public function in the end. I'm still not satisfied with the result, but seeing how time is limited and there's still a lot more to learn, it's time to move on to a new project instead of endlessly refactoring this specific project.
 
-Another goal was transforming theory and pseudocode on the minimax algorithm into a fully functional implementation of the algorithm specifically for Tic-Tac-Toe. At first I fully implemented the two player version of the game first which ended up being a mistake as my code then needed a fair bit of refactoring in order to make everything suitable for the minimax algorithm.
+Another goal was transforming theory and pseudocode of the minimax algorithm into a fully functional implementation of the algorithm specifically for Tic-Tac-Toe. At first I fully implemented the two player version of the game first which ended up being a mistake as my code then needed a fair bit of refactoring in order to make everything suitable for the minimax algorithm. 
 
 Creating a design for the app itself took a bit of time, but wasn't the main focus of the project. Hence the rather minimal approach.
 

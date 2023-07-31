@@ -575,7 +575,10 @@ const aiOpponent = (() => {
             for (let i = 0; i < 9; i++) {
                 if (board[i] === null) {
                     board[i] = player
-                    bestValue = Math.max(bestValue, minimax(board, depth + 1, false))
+                    let newValue = minimax(board, depth + 1, false)
+                    if (newValue > bestValue) {
+                        bestValue = newValue
+                    }
                     board[i] = null
                 }
             }
@@ -588,7 +591,10 @@ const aiOpponent = (() => {
             for (let i = 0; i < 9; i++) {
                 if (board[i] === null) {
                     board[i] = opponent
-                    bestValue = Math.min(bestValue, minimax(board, depth + 1, true))
+                    let newValue = minimax(board, depth + 1, true)
+                    if (newValue < bestValue) {
+                        bestValue = newValue
+                    }
                     board[i] = null
                 }
             }
