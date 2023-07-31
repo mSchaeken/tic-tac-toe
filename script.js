@@ -215,8 +215,7 @@ const gameboard = (() => {
 
     function checkForGameOver(
         board,
-        player = gameFlow.getActivePlayer().getMark(),
-        opponent = gameFlow.getInactivePlayer().getMark(),
+        player = gameFlow.getActivePlayer().getMark()
         ) {
         //Horizontal states
         if (
@@ -314,7 +313,7 @@ const gameboard = (() => {
                 }
                 break
             case 'impossible':
-                move = minimax()
+                move = aiOpponent.findOptimalMove(gameboard.getGameboardState())
                 break                
         }
 
@@ -551,56 +550,80 @@ const aiOpponent = (() => {
         IF terminal state -> see who won and assign either positive or negative value to moveValue
         ELSE -> call function again
 
-    */ 
+    */
+   
+    let boardToTraverse = gameboard.getGameboardState()
 
     let testBoard = ["O",1,"X","X",4,"X",6,"O","O"];
 
-    let humanPlayer = 'X'
-    let aiPlayer = 'O'
+    let player = 'O'
+    let opponent = 'X'
 
     function findOptimalMove (board) {
-        let possibleMoves = gameboard.getEmptyIndices(board)
         let bestMove = undefined
-        
-        // for each move in board :
-        for (let i = 0; i < possibleMoves.length; i++) {
-            possibleMoves[i]
+        let bestValue = -1000
+
+        for (let i = 0; i < 9; i++) {
+            if (board[i] === null) {
+                board[i] = player
+                let moveValue = minimax(board, 0, false)
+                board[i] = null
+
+                if (moveValue > bestValue) {
+                    bestMove = i
+                    bestValue = moveValue
+                }
+            }
         }
-        // if current move is better than bestMove
-        //     bestMove = current move
-        // return bestMove
+
+        return bestMove
     }
 
-    function minimax (board, depth, player) {
-        //Check for terminal state
-        if (gameboard.checkForGameOver(board, )) {
+    function minimax (board, depth, isMaximizingPlayer) {
 
+        if (gameboard.checkForGameOver(board, player) === true) {
+            return boardValue = +10
+        } 
+        else if (gameboard.checkForGameOver(board, opponent) === true) {
+            return boardValue = -10
         }
-        //If terminal state is reached by maximising player +10
-        //If terminal state is reach by minimising player -10
-        //If terminal state is a tie +0
+        else if (_isMovesLeft(board) === false) {
+            return boardValue = 0
+        }
 
-        // if isMaximizingPlayer :
-        // bestVal = -INFINITY 
-        // for each move in board :
-        //     value = minimax(board, depth+1, false)
-        //     bestVal = max( bestVal, value) 
-        // return bestVal
+        if (isMaximizingPlayer === true) {
+            let bestValue = -1000
 
-        // else :
-        // bestVal = +INFINITY 
-        // for each move in board :
-        //     value = minimax(board, depth+1, true)
-        //     bestVal = min(bestVal, value) 
-        // return bestVal
-    }
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === null) {
+                    board[i] = player
+                    bestValue = Math.max(bestValue, minimax(board, depth + 1, false))
+                    board[i] = null
+                }
+            }
+            return bestValue
+        }
 
-    function isMovesLeft (board) {
+        else {
+            let bestValue = 1000
+
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === null) {
+                    board[i] = opponent
+                    bestValue = Math.min(bestValue, minimax(board, depth + 1, true))
+                    board[i] = null
+                }
+            }
+            return bestValue
+        }
+        }
+
+    function _isMovesLeft (board) {
         for (let i = 0; i < 9; i++)
-             if (i === null) {
+             if (board[i] === null) {
                 return true
              }
-             return false
+        return false
     }
 
     return {
@@ -609,6 +632,7 @@ const aiOpponent = (() => {
         getAiOpponentDifficulty,
         getRandomInt,
         getRandomValidMove,
+        findOptimalMove,
         minimax
     }
 
