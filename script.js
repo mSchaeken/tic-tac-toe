@@ -47,7 +47,7 @@ const gameFlow = (() => {
             activePlayer = gameFlow.playerTwo;
             inactivePlayer = gameFlow.playerOne;
 
-            if (gameFlow.getOpponent() === 'computer') {
+            if (gameFlow.getOpponent() === 'computer' && gameFlow.getGameIsActive() === true) {
                 setTimeout(gameboard.placeComputerMarker(), 3000)
                 toggleActivePlayer()
             }
@@ -296,6 +296,8 @@ const gameboard = (() => {
     }
 
     const placeComputerMarker = function (indices) {
+
+
         const gameboardCells = document.querySelectorAll('.gameboard-cell')
         let move = null
         
@@ -316,6 +318,7 @@ const gameboard = (() => {
                 break                
         }
 
+        console.log(move)
         if (move !== false &&
           gameFlow.getGameIsActive() === true
         ) {
@@ -323,10 +326,17 @@ const gameboard = (() => {
             _updateGameboardRows(move)
             let isGameOver = checkForGameOver(gameboard.getGameboardState())
 
-            if (isGameOver === player) {
+            if (isGameOver === true) {
                 _gameOver(isGameOver)
             }
-        } else if (gameFlow.getGameIsActive() === true) {
+        }
+        
+        else if (gameboard.getEmptyIndices(gameboard.getGameboardState()).length === 0) {
+            isGameOver = 'Tie'
+            _gameOver(isGameOver)
+        }
+        
+        else if (gameFlow.getGameIsActive() === true) {
             placeComputerMarker()
         }
       };
