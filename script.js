@@ -565,7 +565,7 @@ const aiOpponent = (() => {
         else if (gameboard.checkForGameOver(board, opponent) === true) {
             return boardValue = -10
         }
-        else if (_isMovesLeft(board) === false) {
+        else if (gameboard.getEmptyIndices(board).length === 0) {
             return boardValue = 0
         }
 
@@ -595,14 +595,6 @@ const aiOpponent = (() => {
             return bestValue
         }
         }
-
-    function _isMovesLeft (board) {
-        for (let i = 0; i < 9; i++)
-             if (board[i] === null) {
-                return true
-             }
-        return false
-    }
 
     return {
         setAiOpponentDifficulty,
