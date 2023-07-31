@@ -178,6 +178,13 @@ div.reset-div {
     margin: 16px;
 }
 
+.opponent-selection-div {
+    margin-top: 16px;
+    gap: 16px;
+    display: flex;
+    justify-content: center;
+}
+
 .start-button,
 .reset-button {
     width: 11vw;
@@ -222,12 +229,21 @@ div.reset-div {
 
 .opponent-button {
     background-color: white;
+    width: 6vw;
+    height: 4vw;
+    padding: 4px;
+    font-weight: 600;
+    background-color: var(--pacific-cyan);
+    color: white;
+    border-style: solid;
+    border-radius: 4px;
 }
 
 .opponent-button:hover {
     transition: 0.2s;
     border: solid;
     border-width: 2px;
+    border-color: var(--honolulu-blue);
 }
 
 .active-opponent-button {
@@ -241,4 +257,30 @@ div.reset-div {
 .inactive-opponent-button {
     background-color: white;
     color: black;
+}
+
+.computer-div {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+#ai-versus {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#computer-difficulty-dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 6vw;
+    height: 24px;
 }
