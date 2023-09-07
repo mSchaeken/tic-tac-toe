@@ -1,5 +1,8 @@
 # Tic-Tac-Toe 
 
+## **Live demo**
+https://mschaeken.github.io/tic-tac-toe
+
 ## Description
 
 A straightforward and simple game of Tic-Tac-Toe. Supports either two player gameplay or single player against an AI of varying difficulties.
